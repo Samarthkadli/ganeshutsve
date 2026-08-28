@@ -568,21 +568,7 @@ export default function HomeEvaluationPage() {
                 </button>
               </div>
 
-              {/* Admin / Results Link */}
-              <div style={{ textAlign: 'center', paddingBottom: '3rem' }}>
-                <Link
-                  href="/admin/dashboard"
-                  style={{
-                    fontSize: '0.85rem',
-                    color: 'var(--color-text-muted)',
-                    textDecoration: 'none',
-                    borderBottom: '1px dashed var(--color-border)',
-                    paddingBottom: '2px',
-                  }}
-                >
-                  📊 View Admin & Results Dashboard
-                </Link>
-              </div>
+
             </div>
           </div>
         </div>

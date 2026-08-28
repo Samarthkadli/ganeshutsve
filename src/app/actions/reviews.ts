@@ -44,7 +44,7 @@ export async function submitReview(data: ReviewFormData) {
         const { data: anonAuth } = await supabase.auth.signInAnonymously();
         user = anonAuth?.user ?? null;
       } catch {
-        // Anonymous signin not configured or failed
+        // Anonymous signin not configured or failed — proceed without user
       }
     }
 
@@ -74,54 +74,55 @@ export async function submitReview(data: ReviewFormData) {
           .maybeSingle();
 
         if (createError) {
-          console.warn('Note: Could not insert mandal to Supabase (check RLS policies):', createError.message);
-          // Try to fallback to any existing mandal if available
-          const { data: fallbackMandal } = await supabase
-            .from('mandals')
-            .select('id')
-            .limit(1)
-            .maybeSingle();
-          if (fallbackMandal?.id) {
-            mandalId = fallbackMandal.id;
-          }
+          console.error('Mandal insert error:', createError);
+          return {
+            error: `ಮಂಡಳಿ ನೋಂದಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ / Could not register mandal: ${createError.message}. Please run the SQL policy fix in Supabase.`,
+          };
         } else if (newMandal) {
           mandalId = newMandal.id;
         }
       }
     }
 
-    // 3. Insert review if mandalId is available
-    if (mandalId) {
-      const insertPayload: Record<string, unknown> = {
-        mandal_id: mandalId,
-        idol_rating: data.idol_rating,
-        decoration_rating: data.decoration_rating,
-        lighting_rating: data.lighting_rating,
-        creativity_rating: data.creativity_rating,
-        cleanliness_rating: data.cleanliness_rating,
-        eco_friendly_rating: data.eco_friendly_rating,
-        cultural_rating: data.cultural_rating,
-        overall_rating: data.overall_rating,
-        feedback: data.feedback?.trim() || null,
-      };
-
-      if (user?.id) {
-        insertPayload.user_id = user.id;
-      }
-
-      const { error: insertError } = await supabase
-        .from('reviews')
-        .insert(insertPayload);
-
-      if (insertError) {
-        console.warn('Note: Review insert in Supabase encountered notice (check RLS policies):', insertError.message);
-      }
+    if (!mandalId) {
+      return { error: 'ಮಂಡಳಿ ID ಸಿಗಲಿಲ್ಲ / Could not resolve Mandal ID. Please try again.' };
     }
-  } catch (err) {
-    console.warn('Supabase submission handled gracefully:', err);
-  }
 
-  return { success: true, mandalName };
+    // 3. Insert review
+    const insertPayload: Record<string, unknown> = {
+      mandal_id: mandalId,
+      idol_rating: data.idol_rating,
+      decoration_rating: data.decoration_rating,
+      lighting_rating: data.lighting_rating,
+      creativity_rating: data.creativity_rating,
+      cleanliness_rating: data.cleanliness_rating,
+      eco_friendly_rating: data.eco_friendly_rating,
+      cultural_rating: data.cultural_rating,
+      overall_rating: data.overall_rating,
+      feedback: data.feedback?.trim() || null,
+    };
+
+    if (user?.id) {
+      insertPayload.user_id = user.id;
+    }
+
+    const { error: insertError } = await supabase
+      .from('reviews')
+      .insert(insertPayload);
+
+    if (insertError) {
+      console.error('Review insert error:', insertError);
+      return {
+        error: `ಮೌಲ್ಯಮಾಪನ ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ / Review could not be saved: ${insertError.message}. Please run the SQL policy fix in Supabase.`,
+      };
+    }
+
+    return { success: true, mandalName };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('submitReview exception:', msg);
+    return { error: `ದೋಷ ಉಂಟಾಯಿತು / Unexpected error: ${msg}` };
+  }
 }
 
 export async function checkExistingReview() {
