@@ -27,6 +27,8 @@ export default function HomeEvaluationPage() {
 
   const [ratings, setRatings] = useState<Record<RatingKey, number>>({} as Record<RatingKey, number>);
   const [feedback, setFeedback] = useState('');
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -116,7 +118,7 @@ export default function HomeEvaluationPage() {
     }
 
     for (const q of EVALUATION_QUESTIONS) {
-      if (!ratings[q.id] || ratings[q.id] < 1 || ratings[q.id] > 5) {
+      if (!ratings[q.id] || ratings[q.id] < 1 || ratings[q.id] > 10) {
         newErrors[q.id] = `Please rate ${q.label}`;
       }
     }
@@ -159,8 +161,11 @@ export default function HomeEvaluationPage() {
         cleanliness_rating: ratings.cleanliness_rating,
         eco_friendly_rating: ratings.eco_friendly_rating,
         cultural_rating: ratings.cultural_rating,
+        discipline_rating: ratings.discipline_rating,
+        facilities_rating: ratings.facilities_rating,
         overall_rating: ratings.overall_rating,
         feedback: feedback.trim() || undefined,
+        photo: photoPreview || undefined,
       };
 
       const result = await submitReview(data);
@@ -187,6 +192,8 @@ export default function HomeEvaluationPage() {
     setSelectedMandalId(null);
     setRatings({} as Record<RatingKey, number>);
     setFeedback('');
+    setPhotoFile(null);
+    setPhotoPreview(null);
     setErrors({});
     setSubmitError('');
     setSubmittedMandal(null);
@@ -235,29 +242,165 @@ export default function HomeEvaluationPage() {
           <div className="container" style={{ maxWidth: 680 }}>
             <div className="animate-slide-up">
               {/* Header */}
-              <div className="page-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <div style={{ fontSize: '2.2rem', marginBottom: '0.5rem', letterSpacing: '0.1em' }}>🙏 ಶ್ರೀ ಗಣೇಶಾಯ ನಮಃ 🙏</div>
-                <h1 style={{ fontSize: '1.7rem', fontWeight: 800, color: 'var(--color-text-primary)', lineHeight: 1.3, marginBottom: '0.35rem' }}>
+              <div className="page-header" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1rem',
+                  minHeight: '190px',
+                }}>
+                  {/* Left Aligned: Lokmanya Tilak Portrait */}
+                  <div style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                  }}>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <div style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '150px',
+                        height: '150px',
+                        background: 'radial-gradient(circle, rgba(229, 193, 88, 0.2) 0%, rgba(232, 117, 26, 0.1) 55%, transparent 75%)',
+                        filter: 'blur(16px)',
+                        pointerEvents: 'none',
+                        borderRadius: '50%',
+                      }} />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/tilak.png"
+                        alt="Lokmanya Tilak"
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          objectFit: 'cover',
+                          display: 'block',
+                          borderRadius: '50%',
+                          position: 'relative',
+                          zIndex: 1,
+                          filter: 'drop-shadow(0 6px 18px rgba(0, 0, 0, 0.65))',
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Center: Lord Ganesha Emblem */}
+                  <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '220px',
+                      height: '220px',
+                      background: 'radial-gradient(circle, rgba(229, 193, 88, 0.22) 0%, rgba(232, 117, 26, 0.12) 55%, transparent 75%)',
+                      filter: 'blur(20px)',
+                      pointerEvents: 'none',
+                      borderRadius: '50%',
+                    }} />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/ganesha.png"
+                      alt="Lord Ganesha"
+                      style={{
+                        width: '170px',
+                        height: 'auto',
+                        maxHeight: '190px',
+                        objectFit: 'contain',
+                        display: 'block',
+                        margin: '0 auto',
+                        position: 'relative',
+                        zIndex: 1,
+                        filter: 'drop-shadow(0 6px 18px rgba(0, 0, 0, 0.65))',
+                      }}
+                    />
+                  </div>
+
+                  {/* Right Aligned: Swamiji Portrait */}
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                  }}>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <div style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '150px',
+                        height: '150px',
+                        background: 'radial-gradient(circle, rgba(229, 193, 88, 0.2) 0%, rgba(232, 117, 26, 0.1) 55%, transparent 75%)',
+                        filter: 'blur(16px)',
+                        pointerEvents: 'none',
+                        borderRadius: '50%',
+                      }} />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/swamiji.png"
+                        alt="Sri Swamiji"
+                        style={{
+                          width: '120px',
+                          height: '120px',
+                          objectFit: 'cover',
+                          display: 'block',
+                          borderRadius: '50%',
+                          position: 'relative',
+                          zIndex: 1,
+                          filter: 'drop-shadow(0 6px 18px rgba(0, 0, 0, 0.65))',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  color: 'var(--color-gold-light)',
+                  letterSpacing: '0.15em',
+                  marginBottom: '0.6rem',
+                  opacity: 0.9
+                }}>
+                  🙏 ಶ್ರೀ ಗಣೇಶಾಯ ನಮಃ 🙏
+                </div>
+                <h1 className="text-gold-gradient" style={{
+                  fontSize: 'clamp(1rem, 3.4vw, 1.65rem)',
+                  fontWeight: 800,
+                  whiteSpace: 'nowrap',
+                  lineHeight: 1.3,
+                  marginBottom: '0.35rem',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
                   {APP_CONFIG.appName}
                 </h1>
-                <p style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: '0.15rem' }}>
+                <p style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--color-gold-light)', marginBottom: '0.2rem' }}>
                   {APP_CONFIG.appNameEnglish}
                 </p>
-                <p style={{ color: 'var(--color-orange)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.15rem' }}>
+                <p style={{ color: 'var(--color-gold)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.15rem' }}>
                   {APP_CONFIG.organizer}
                 </p>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.825rem', marginBottom: '0.6rem' }}>
                   {APP_CONFIG.organizerEnglish}
                 </p>
                 <div style={{
                   display: 'inline-block',
-                  padding: '4px 14px',
-                  background: 'linear-gradient(135deg, var(--color-orange), var(--color-deep-red))',
-                  color: 'white',
+                  padding: '5px 16px',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid var(--color-border-strong)',
+                  color: 'var(--color-gold-light)',
                   borderRadius: '9999px',
-                  fontSize: '0.8rem',
+                  fontSize: '0.82rem',
                   fontWeight: 700,
-                  letterSpacing: '0.05em',
+                  letterSpacing: '0.06em',
                   marginBottom: '0.5rem',
                 }}>
                   {APP_CONFIG.subtitle}
@@ -274,12 +417,10 @@ export default function HomeEvaluationPage() {
                 className={`eval-question ${errors.mandal_name ? 'has-error' : ''}`}
                 style={{
                   position: 'relative',
-                  background: 'linear-gradient(135deg, rgba(212, 168, 67, 0.08), rgba(232, 117, 26, 0.04))',
-                  border: '1.5px solid var(--color-gold)',
                   marginBottom: '1.75rem',
                 }}
               >
-                <div className="eval-question-number" style={{ color: 'var(--color-orange)' }}>
+                <div className="eval-question-number" style={{ color: 'var(--color-gold-light)' }}>
                   ಹಂತ 1 • ಮಂಡಳಿ ಮಾಹಿತಿ / Step 1 • Mandal Information
                 </div>
                 <label
@@ -348,10 +489,12 @@ export default function HomeEvaluationPage() {
                         top: 'calc(100% + 4px)',
                         left: 0,
                         right: 0,
-                        backgroundColor: '#FFFFFF',
-                        border: '1.5px solid var(--color-gold)',
+                        backgroundColor: 'rgba(20, 10, 15, 0.96)',
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        border: '1px solid var(--color-border-strong)',
                         borderRadius: 'var(--radius-md)',
-                        boxShadow: 'var(--shadow-lg)',
+                        boxShadow: 'var(--shadow-xl)',
                         zIndex: 50,
                         maxHeight: '260px',
                         overflowY: 'auto',
@@ -359,12 +502,12 @@ export default function HomeEvaluationPage() {
                     >
                       <div
                         style={{
-                          padding: '6px 12px',
+                          padding: '8px 12px',
                           fontSize: '0.75rem',
                           fontWeight: 700,
-                          color: 'var(--color-gold-dark)',
-                          background: 'rgba(212, 168, 67, 0.08)',
-                          borderBottom: '1px solid var(--color-border-light)',
+                          color: 'var(--color-gold-light)',
+                          background: 'rgba(229, 193, 88, 0.15)',
+                          borderBottom: '1px solid var(--color-border)',
                           textTransform: 'uppercase',
                           letterSpacing: '0.05em',
                         }}
@@ -385,7 +528,7 @@ export default function HomeEvaluationPage() {
                             alignItems: 'center',
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(212, 168, 67, 0.12)';
+                            e.currentTarget.style.background = 'rgba(229, 193, 88, 0.18)';
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.background = 'transparent';
@@ -406,8 +549,9 @@ export default function HomeEvaluationPage() {
                               fontSize: '0.75rem',
                               padding: '2px 8px',
                               borderRadius: '9999px',
-                              background: 'rgba(39, 174, 96, 0.12)',
+                              background: 'rgba(46, 204, 113, 0.15)',
                               color: 'var(--color-success)',
+                              border: '1px solid rgba(46, 204, 113, 0.3)',
                               fontWeight: 600,
                             }}
                           >
@@ -492,7 +636,7 @@ export default function HomeEvaluationPage() {
                   className="eval-question-number"
                   style={{ marginBottom: '0.75rem', fontSize: '0.85rem' }}
                 >
-                  ಹಂತ 2 • ಮಂಡಳಿಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ / Step 2 • Rate the Mandal (1 to 5 Stars)
+                  ಹಂತ 2 • ಮಂಡಳಿಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (1-10 ಅಂಕಗಳು) / Step 2 • Rate the Mandal (1 to 10 Points per question)
                 </div>
 
                 {EVALUATION_QUESTIONS.map((q, idx) => (
@@ -527,6 +671,61 @@ export default function HomeEvaluationPage() {
                     )}
                   </div>
                 ))}
+              </div>
+
+              {/* Photo Upload (Optional) */}
+              <div className="eval-question" style={{ marginBottom: '1.75rem' }}>
+                <div className="eval-question-label">ಫೋಟೋ ಸೇರಿಸಿ / Add Mandal Photo (Optional)</div>
+                <div className="eval-question-text">ಈ ಗಣೇಶ ಮಂಡಳಿಯ ಸುಂದರ ಫೋಟೋ ಸೇರಿಸಿ (ಐಚ್ಛಿಕ)</div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '0.75rem' }}>
+                  Upload a photo of this Ganesh Mandal (optional)
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="photo-upload-input"
+                    className="form-input"
+                    disabled={submitting}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setPhotoFile(file);
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          setPhotoPreview(ev.target?.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      } else {
+                        setPhotoFile(null);
+                        setPhotoPreview(null);
+                      }
+                    }}
+                    style={{
+                      padding: '0.65rem 0.9rem',
+                      fontSize: '0.9rem',
+                      cursor: 'pointer',
+                    }}
+                  />
+                  {photoFile && (
+                    <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(229, 193, 88, 0.1)', padding: '8px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' }}>
+                      {photoPreview && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={photoPreview} alt="Mandal preview" style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '6px', border: '1px solid var(--color-gold)' }} />
+                      )}
+                      <div style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.85rem', color: 'var(--color-gold-light)' }}>
+                        📸 <strong>{photoFile.name}</strong>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setPhotoFile(null); setPhotoPreview(null); const el = document.getElementById('photo-upload-input') as HTMLInputElement; if (el) el.value = ''; }}
+                        style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer', fontSize: '0.8rem', textDecoration: 'underline' }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Additional Feedback */}

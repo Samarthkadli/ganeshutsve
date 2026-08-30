@@ -1,5 +1,6 @@
 // =====================================================
 // Database Types for Koppal Ganapathi Utsava 2026
+// 10-Question & 10-Point Rating Schema
 // =====================================================
 
 export interface Profile {
@@ -31,8 +32,11 @@ export interface Review {
   cleanliness_rating: number;
   eco_friendly_rating: number;
   cultural_rating: number;
+  discipline_rating: number;
+  facilities_rating: number;
   overall_rating: number;
   feedback: string | null;
+  photo_url?: string | null;
   created_at: string;
 }
 
@@ -50,6 +54,8 @@ export interface MandalStats {
   avg_cleanliness: number;
   avg_eco_friendly: number;
   avg_cultural: number;
+  avg_discipline: number;
+  avg_facilities: number;
   avg_overall: number;
 }
 
@@ -59,7 +65,7 @@ export interface ReviewWithEmail extends Review {
   };
 }
 
-// Form data for submitting a review
+// Form data for submitting a review (10 Questions, 10 Points each)
 export interface ReviewFormData {
   mandal_name: string;
   mandal_id?: string;
@@ -71,8 +77,11 @@ export interface ReviewFormData {
   cleanliness_rating: number;
   eco_friendly_rating: number;
   cultural_rating: number;
+  discipline_rating: number;
+  facilities_rating: number;
   overall_rating: number;
   feedback?: string;
+  photo?: string;
 }
 
 // Form data for mandal management

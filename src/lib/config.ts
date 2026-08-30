@@ -1,98 +1,121 @@
 // =====================================================
 // Application Configuration
-// Easily editable evaluation questions and app settings
+// 10 Evaluation Questions & 10-Point Rating System
 // =====================================================
 
 /**
- * Evaluation questions configuration.
- * Based on the official judging criteria of
+ * Evaluation questions configuration (10 Questions).
+ * Based on official judging criteria of
  * ಸಾರ್ವಜನಿಕ ಜನ ಜಾಗೃತಿ ಗಣಪತಿ ಪ್ರೋತ್ಸಾಹ ಸ್ಪರ್ಧೆ 2026
  * Organized by: ಶ್ರೀ ಮಾನ್ಯ, ಬಾಲ ಗಂಗಾಧರ ತಿಲಕ್ ಸಮಿತಿ, ಕೊಪ್ಪಳ
  */
 export const EVALUATION_QUESTIONS = [
   {
     id: 'idol_rating',
-    label: 'ಗಣೇಶ ವಿಗ್ರಹ / Ganesha Idol',
-    labelKannada: 'ಪರಿಸರ ಸ್ನೇಹಿ ಮಣ್ಣಿನ ಗಣಪ ಪ್ರತಿಷ್ಠಾಪನೆ',
-    labelEnglish: 'Eco-Friendly Clay Ganesha Idol',
-    question: 'ಮಣ್ಣಿನ ಗಣಪ ವಿಗ್ರಹದ ಗುಣಮಟ್ಟ ಮತ್ತು ಪರಿಸರ ಸ್ನೇಹಿ ಸ್ಥಾಪನೆಯನ್ನು ನಿಮ್ಮ ಅಭಿಪ್ರಾಯದಿಂದ ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ',
-    questionEnglish: 'Rate the quality & eco-friendliness of the clay Ganesha idol installation',
+    label: '1. ಗಣೇಶ ವಿಗ್ರಹ / Ganesha Idol',
+    labelKannada: '1. ಪರಿಸರ ಸ್ನೇಹಿ ಮಣ್ಣಿನ ಗಣಪ ಪ್ರತಿಷ್ಠಾಪನೆ',
+    labelEnglish: '1. Eco-Friendly Clay Ganesha Idol',
+    question: 'ಮಣ್ಣಿನ ಗಣಪ ವಿಗ್ರಹದ ಗುಣಮಟ್ಟ ಮತ್ತು ಪರಿಸರ ಸ್ನೇಹಿ ಸ್ಥಾಪನೆಯನ್ನು ನಿಮ್ಮ ಅಭಿಪ್ರಾಯದಿಂದ ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the quality & eco-friendliness of the clay Ganesha idol installation (out of 10)',
     shortLabel: 'ವಿಗ್ರಹ / Idol',
   },
   {
     id: 'decoration_rating',
-    label: 'ಮಂಟಪ ಅಲಂಕಾರ / Pandal Decoration',
-    labelKannada: 'ಗಣಪತಿಯ ಮಂಟಪ (ಟೆಂಟ್) ಅಲಂಕಾರ',
-    labelEnglish: 'Pandal Decoration & Theme',
-    question: 'ಮಂಟಪದ ಅಲಂಕಾರ, ಥೀಮ್ ಮತ್ತು ಸೌಂದರ್ಯವನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ',
-    questionEnglish: 'Rate the decoration, theme and visual beauty of the pandal',
+    label: '2. ಮಂಟಪ ಅಲಂಕಾರ / Pandal Decoration',
+    labelKannada: '2. ಗಣಪತಿಯ ಮಂಟಪ (ಟೆಂಟ್) ಅಲಂಕಾರ',
+    labelEnglish: '2. Pandal Decoration & Theme',
+    question: 'ಮಂಟಪದ ಅಲಂಕಾರ, ಥೀಮ್ ಮತ್ತು ಸೌಂದರ್ಯವನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the decoration, theme and visual beauty of the pandal (out of 10)',
     shortLabel: 'ಅಲಂಕಾರ / Decor',
   },
   {
     id: 'lighting_rating',
-    label: 'ದೀಪಾಲಂಕಾರ / Lighting',
-    labelKannada: 'ದೀಪ ಮತ್ತು ವಿದ್ಯುತ್ ಅಲಂಕಾರ',
-    labelEnglish: 'Lighting & Illumination',
-    question: 'ಮಂಟಪದ ದೀಪಾಲಂಕಾರ ಮತ್ತು ಬೆಳಕಿನ ವ್ಯವಸ್ಥೆಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ',
-    questionEnglish: 'Rate the lighting arrangements and illumination of the pandal',
+    label: '3. ದೀಪಾಲಂಕಾರ / Lighting',
+    labelKannada: '3. ದೀಪ ಮತ್ತು ವಿದ್ಯುತ್ ಅಲಂಕಾರ',
+    labelEnglish: '3. Lighting & Illumination',
+    question: 'ಮಂಟಪದ ದೀಪಾಲಂಕಾರ ಮತ್ತು ಬೆಳಕಿನ ವ್ಯವಸ್ಥೆಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the lighting arrangements and illumination of the pandal (out of 10)',
     shortLabel: 'ದೀಪ / Lighting',
   },
   {
     id: 'creativity_rating',
-    label: 'ಸಾಮಾಜಿಕ ಸಂದೇಶ / Social Message',
-    labelKannada: 'ಸಾರ್ವಜನಿಕರಿಗೆ ಒಳ್ಳೆ ಸಂದೇಶ ಮತ್ತು ಜಾಗೃತಿ',
-    labelEnglish: 'Awareness & Social Message',
-    question: 'ಮಂಡಳಿ ಸಾರ್ವಜನಿಕರಿಗೆ ನೀಡುವ ಸಂದೇಶ ಮತ್ತು ಜನ ಜಾಗೃತಿ ಕಾರ್ಯಕ್ರಮದ ಗುಣಮಟ್ಟವನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ',
-    questionEnglish: 'Rate the social awareness message and public outreach activities of the mandal',
+    label: '4. ಸಾಮಾಜಿಕ ಸಂದೇಶ / Social Message',
+    labelKannada: '4. ಸಾರ್ವಜನಿಕರಿಗೆ ಒಳ್ಳೆ ಸಂದೇಶ ಮತ್ತು ಜಾಗೃತಿ',
+    labelEnglish: '4. Awareness & Social Message',
+    question: 'ಮಂಡಳಿ ಸಾರ್ವಜನಿಕರಿಗೆ ನೀಡುವ ಸಂದೇಶ ಮತ್ತು ಜನ ಜಾಗೃತಿ ಕಾರ್ಯಕ್ರಮದ ಗುಣಮಟ್ಟವನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the social awareness message and public outreach activities of the mandal (out of 10)',
     shortLabel: 'ಸಂದೇಶ / Message',
   },
   {
     id: 'cleanliness_rating',
-    label: 'ಸ್ವಚ್ಛತೆ / Cleanliness',
-    labelKannada: 'ಮಂಟಪ ಮತ್ತು ಪರಿಸರದ ಸ್ವಚ್ಛತೆ',
-    labelEnglish: 'Pandal & Surroundings Cleanliness',
-    question: 'ಗಣಪತಿಯ ಮಂಟಪ ಮತ್ತು ಸುತ್ತಮುತ್ತಲಿನ ಪ್ರದೇಶದ ಸ್ವಚ್ಛತೆಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ',
-    questionEnglish: 'Rate the cleanliness of the pandal and its surroundings',
+    label: '5. ಸ್ವಚ್ಛತೆ / Cleanliness',
+    labelKannada: '5. ಮಂಟಪ ಮತ್ತು ಪರಿಸರದ ಸ್ವಚ್ಛತೆ',
+    labelEnglish: '5. Pandal & Surroundings Cleanliness',
+    question: 'ಗಣಪತಿಯ ಮಂಟಪ ಮತ್ತು ಸುತ್ತಮುತ್ತಲಿನ ಪ್ರದೇಶದ ಸ್ವಚ್ಛತೆಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the cleanliness of the pandal and its surroundings (out of 10)',
     shortLabel: 'ಸ್ವಚ್ಛತೆ / Clean',
   },
   {
     id: 'eco_friendly_rating',
-    label: 'ಪರಿಸರ ಸ್ನೇಹಿ / Eco-Friendly',
-    labelKannada: 'ಪರಿಸರ ಸ್ನೇಹಿ ಆಚರಣೆ ಮತ್ತು ವ್ಯವಸ್ಥೆ',
-    labelEnglish: 'Eco-Friendly Practices & Arrangements',
-    question: 'ಮಂಡಳಿಯ ಪರಿಸರ ಸ್ನೇಹಿ ಚಟುವಟಿಕೆ ಮತ್ತು ಪ್ಲಾಸ್ಟಿಕ್ ಮುಕ್ತ ಆಚರಣೆಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ',
-    questionEnglish: 'Rate the mandal\'s eco-friendly and plastic-free celebration practices',
+    label: '6. ಪರಿಸರ ಸ್ನೇಹಿ / Eco-Friendly',
+    labelKannada: '6. ಪರಿಸರ ಸ್ನೇಹಿ ಆಚರಣೆ ಮತ್ತು ವ್ಯವಸ್ಥೆ',
+    labelEnglish: '6. Eco-Friendly Practices & Arrangements',
+    question: 'ಮಂಡಳಿಯ ಪರಿಸರ ಸ್ನೇಹಿ ಚಟುವಟಿಕೆ ಮತ್ತು ಪ್ಲಾಸ್ಟಿಕ್ ಮುಕ್ತ ಆಚರಣೆಯನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the mandal\'s eco-friendly and plastic-free celebration practices (out of 10)',
     shortLabel: 'ಪರಿಸರ / Eco',
   },
   {
     id: 'cultural_rating',
-    label: 'ಸಾಂಸ್ಕೃತಿಕ ಕಾರ್ಯಕ್ರಮ / Cultural Programs',
-    labelKannada: 'ಧಾರ್ಮಿಕ, ಸಾಂಸ್ಕೃತಿಕ ಮತ್ತು ಸಾಮಾಜಿಕ ಕಾರ್ಯಕ್ರಮ',
-    labelEnglish: 'Religious, Cultural & Social Programs',
-    question: 'ಮಂಡಳಿಯ ಧಾರ್ಮಿಕ, ಸಾಂಸ್ಕೃತಿಕ ಮತ್ತು ಸಾಮಾಜಿಕ ಕಾರ್ಯಕ್ರಮಗಳ ಗುಣಮಟ್ಟವನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ',
-    questionEnglish: 'Rate the quality of religious, cultural and social awareness programs organized',
+    label: '7. ಸಾಂಸ್ಕೃತಿಕ ಕಾರ್ಯಕ್ರಮ / Cultural Programs',
+    labelKannada: '7. ಧಾರ್ಮಿಕ, ಸಾಂಸ್ಕೃತಿಕ ಮತ್ತು ಸಾಮಾಜಿಕ ಕಾರ್ಯಕ್ರಮ',
+    labelEnglish: '7. Religious, Cultural & Social Programs',
+    question: 'ಮಂಡಳಿಯ ಧಾರ್ಮಿಕ, ಸಾಂಸ್ಕೃತಿಕ ಮತ್ತು ಸಾಮಾಜಿಕ ಕಾರ್ಯಕ್ರಮಗಳ ಗುಣಮಟ್ಟವನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the quality of religious, cultural and social awareness programs organized (out of 10)',
     shortLabel: 'ಕಾರ್ಯಕ್ರಮ / Culture',
   },
   {
+    id: 'discipline_rating',
+    label: '8. ಶಿಸ್ತು ಮತ್ತು ಭದ್ರತೆ / Discipline & Safety',
+    labelKannada: '8. ಮಂಟಪದ ಶಿಸ್ತು, ಶಾಂತಿ ಮತ್ತು ಭದ್ರತಾ ವ್ಯವಸ್ಥೆ',
+    labelEnglish: '8. Pandal Discipline, Crowd & Traffic Control',
+    question: 'ಮಂಡಳಿಯ ಶಿಸ್ತು, ಭಕ್ತಾದಿಗಳ ಸಾಲು ವ್ಯವಸ್ಥೆ ಮತ್ತು ಭದ್ರತಾ ಚಟುವಟಿಕೆಗಳನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the discipline, crowd queue management and safety measures of the mandal (out of 10)',
+    shortLabel: 'ಶಿಸ್ತು / Discipline',
+  },
+  {
+    id: 'facilities_rating',
+    label: '9. ಭಕ್ತಾದಿಗಳ ಸೌಲಭ್ಯ / Visitor Facilities',
+    labelKannada: '9. ಭಕ್ತಾದಿಗಳಿಗೆ ಕುಡಿಯುವ ನೀರು, ಪ್ರಸಾದ ಮತ್ತು ಸೌಲಭ್ಯ',
+    labelEnglish: '9. Drinking Water, Prasadam & Visitor Amenities',
+    question: 'ಮಂಟಪಕ್ಕೆ ಬರುವ ಭಕ್ತಾದಿಗಳಿಗೆ ಕಲ್ಪಿಸಲಾದ ಸೌಲಭ್ಯಗಳನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Rate the amenities provided for visiting devotees (drinking water, prasadam, sitting) (out of 10)',
+    shortLabel: 'ಸೌಲಭ್ಯ / Amenities',
+  },
+  {
     id: 'overall_rating',
-    label: 'ಒಟ್ಟಾರೆ ಅನುಭವ / Overall Experience',
-    labelKannada: 'ಒಟ್ಟಾರೆ ಮಂಡಳಿ ಮೌಲ್ಯಮಾಪನ',
-    labelEnglish: 'Overall Mandal Rating',
-    question: 'ಈ ಗಣೇಶ ಮಂಡಳಿಗೆ ನಿಮ್ಮ ಒಟ್ಟಾರೆ ಮೌಲ್ಯಮಾಪನ ನೀಡಿ',
-    questionEnglish: 'Give your overall rating for this Ganesh Mandal',
+    label: '10. ಒಟ್ಟಾರೆ ಅನುಭವ / Overall Experience',
+    labelKannada: '10. ಒಟ್ಟಾರೆ ಮಂಡಳಿ ಮೌಲ್ಯಮಾಪನ',
+    labelEnglish: '10. Overall Mandal Rating',
+    question: 'ಈ ಗಣೇಶ ಮಂಡಳಿಗೆ ನಿಮ್ಮ ಒಟ್ಟಾರೆ ಮೌಲ್ಯಮಾಪನ ನೀಡಿ (10 ರಲ್ಲಿ)',
+    questionEnglish: 'Give your overall rating for this Ganesh Mandal (out of 10 points)',
     shortLabel: 'ಒಟ್ಟು / Overall',
   },
 ] as const;
 
 /**
- * Rating labels for star values — Bilingual (Kannada / English)
+ * 10-Point Rating Labels — Bilingual (Kannada / English)
  */
 export const RATING_LABELS: Record<number, string> = {
-  1: 'ಕಳಪೆ / Poor',
-  2: 'ಸಾಧಾರಣ / Average',
-  3: 'ಒಳ್ಳೆಯದು / Good',
-  4: 'ತುಂಬಾ ಒಳ್ಳೆಯದು / Very Good',
-  5: 'ಅತ್ಯುತ್ತಮ / Excellent',
+  1: '1/10 • ಕಳಪೆ / Poor',
+  2: '2/10 • ಸಾಧಾರಣಕ್ಕಿಂತ ಕಡಿಮೆ / Below Average',
+  3: '3/10 • ಸಾಧಾರಣ / Average',
+  4: '4/10 • ಪರವಾಗಿಲ್ಲ / Fair',
+  5: '5/10 • ಒಳ್ಳೆಯದು / Good',
+  6: '6/10 • ಉತ್ತಮ / Above Average',
+  7: '7/10 • ತುಂಬಾ ಒಳ್ಳೆಯದು / Very Good',
+  8: '8/10 • ಅತ್ಯುತ್ತಮ / Great',
+  9: '9/10 • ಅದ್ಭುತ / Excellent',
+  10: '10/10 • ಪರಿಪೂರ್ಣ / Outstanding',
 };
 
 /**

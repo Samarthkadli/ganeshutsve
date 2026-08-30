@@ -59,14 +59,16 @@ export default function MandalDetailPage() {
   }
 
   const categoryAverages = [
-    { label: 'Ganesha Idol', value: stats.avg_idol },
-    { label: 'Decoration', value: stats.avg_decoration },
-    { label: 'Lighting', value: stats.avg_lighting },
-    { label: 'Creativity', value: stats.avg_creativity },
-    { label: 'Cleanliness', value: stats.avg_cleanliness },
-    { label: 'Eco-Friendly', value: stats.avg_eco_friendly },
-    { label: 'Cultural Activities', value: stats.avg_cultural },
-    { label: 'Overall Experience', value: stats.avg_overall },
+    { label: '1. Ganesha Idol', value: stats.avg_idol },
+    { label: '2. Pandal Decoration', value: stats.avg_decoration },
+    { label: '3. Lighting & Illumination', value: stats.avg_lighting },
+    { label: '4. Social Awareness Message', value: stats.avg_creativity },
+    { label: '5. Cleanliness & Hygiene', value: stats.avg_cleanliness },
+    { label: '6. Eco-Friendly Practices', value: stats.avg_eco_friendly },
+    { label: '7. Cultural & Social Programs', value: stats.avg_cultural },
+    { label: '8. Discipline & Safety', value: stats.avg_discipline },
+    { label: '9. Visitor Amenities & Facilities', value: stats.avg_facilities },
+    { label: '10. Overall Experience', value: stats.avg_overall },
   ];
 
   return (
@@ -107,29 +109,29 @@ export default function MandalDetailPage() {
             <div className="admin-stat-value">{stats.total_reviews}</div>
           </div>
           <div className="admin-stat-card">
-            <div className="admin-stat-label">Average Rating</div>
+            <div className="admin-stat-label">Average Score (out of 10)</div>
             <div className="admin-stat-value">
-              {Number(stats.average_rating) > 0 ? `${Number(stats.average_rating).toFixed(2)} / 5` : '—'}
+              {Number(stats.average_rating) > 0 ? `${Number(stats.average_rating).toFixed(2)} / 10` : '—'}
             </div>
           </div>
         </div>
 
         {/* Category averages */}
-        <h3 style={{ color: 'var(--color-admin-text)', marginBottom: '1rem' }}>Category Averages</h3>
+        <h3 style={{ color: 'var(--color-admin-text)', marginBottom: '1rem' }}>Category Averages (out of 10)</h3>
         <div className="admin-table-wrapper mb-xl">
           <table className="admin-table">
             <thead>
               <tr>
                 <th>Category</th>
-                <th style={{ textAlign: 'right' }}>Average</th>
+                <th style={{ textAlign: 'right' }}>Average Score</th>
               </tr>
             </thead>
             <tbody>
               {categoryAverages.map((cat) => (
                 <tr key={cat.label} style={{ cursor: 'default' }}>
                   <td>{cat.label}</td>
-                  <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
-                    {Number(cat.value) > 0 ? `${Number(cat.value).toFixed(2)} ⭐` : '—'}
+                  <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600, color: 'var(--color-gold-light)' }}>
+                    {Number(cat.value) > 0 ? `${Number(cat.value).toFixed(2)} / 10` : '—'}
                   </td>
                 </tr>
               ))}
@@ -182,6 +184,8 @@ export default function MandalDetailPage() {
                       <td style={{ textAlign: 'center' }}>{review.cleanliness_rating}</td>
                       <td style={{ textAlign: 'center' }}>{review.eco_friendly_rating}</td>
                       <td style={{ textAlign: 'center' }}>{review.cultural_rating}</td>
+                      <td style={{ textAlign: 'center' }}>{review.discipline_rating}</td>
+                      <td style={{ textAlign: 'center' }}>{review.facilities_rating}</td>
                       <td style={{ textAlign: 'center' }}>{review.overall_rating}</td>
                       <td style={{ fontSize: '0.8rem', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {review.feedback || '—'}

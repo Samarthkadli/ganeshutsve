@@ -1,60 +1,74 @@
 /* =====================================================
    Koppal Ganapathi Utsava 2026 — Design System
-   Premium Festive Theme: Gold, Orange, Deep Red
+   Rich Royal Festival Theme: Deep Royal Maroon, Warm Crimson, Antique Gold & Warm Cream
    ===================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* =====================================================
-   CSS Custom Properties
+   CSS Custom Properties (Rich Royal Festive Palette)
    ===================================================== */
 :root {
-  /* Primary palette — warm festival tones */
-  --color-gold: #D4A843;
-  --color-gold-light: #F0D68A;
-  --color-gold-dark: #B8922F;
+  /* Rich Deep Festive Background Tones (No Pitch Black) */
+  --color-bg: #1B080E;
+  --color-bg-alt: #260C14;
+  --color-maroon-dark: #340E19;
+  --color-maroon: #4C1221;
+  --color-maroon-light: #6E1A2F;
+  --color-brown-dark: #220B11;
+  
+  /* Rich Gold & Warm Saffron Accents */
+  --color-gold: #E5C158;
+  --color-gold-light: #F7E49A;
+  --color-gold-dark: #B88E2B;
+  --color-gold-muted: #8E6E22;
+  --color-gold-glow: rgba(229, 193, 88, 0.15);
+  --color-gold-border: rgba(229, 193, 88, 0.28);
+
+  /* Vibrant Saffron & Deep Red */
   --color-orange: #E8751A;
   --color-orange-light: #F5A623;
-  --color-deep-red: #C0392B;
-  --color-deep-red-dark: #962D22;
   --color-saffron: #FF6B35;
+  --color-deep-red: #8A151B;
+  --color-deep-red-dark: #5C0E12;
 
-  /* Neutral palette */
-  --color-cream: #FFF8EF;
-  --color-cream-dark: #F5EBD7;
-  --color-white: #FFFFFF;
-  --color-bg: #FFFAF3;
-  --color-surface: #FFFFFF;
-  --color-surface-alt: #FFF6E9;
-  --color-border: #E8DCC8;
-  --color-border-light: #F0E6D4;
+  /* Rich Royal Velvet Glass Surfaces */
+  --color-surface: rgba(38, 14, 22, 0.85);
+  --color-surface-elevated: rgba(50, 18, 28, 0.92);
+  --color-surface-alt: rgba(62, 22, 35, 0.65);
+  --color-surface-hover: rgba(74, 26, 42, 0.75);
+  --color-border: rgba(229, 193, 88, 0.22);
+  --color-border-light: rgba(229, 193, 88, 0.12);
+  --color-border-strong: rgba(229, 193, 88, 0.42);
 
-  /* Text colors */
-  --color-text-primary: #2D1B0E;
-  --color-text-secondary: #6B5744;
-  --color-text-muted: #9B8A75;
-  --color-text-inverse: #FFFFFF;
+  /* Warm Cream & Gold Typography */
+  --color-text-primary: #FFF8F0;
+  --color-text-secondary: #E6D4C2;
+  --color-text-muted: #B39B86;
+  --color-text-inverse: #1B080E;
 
   /* Status colors */
-  --color-success: #27AE60;
-  --color-success-bg: #E8F8EF;
-  --color-error: #E74C3C;
-  --color-error-bg: #FDE8E8;
+  --color-success: #2ECC71;
+  --color-success-bg: rgba(46, 204, 113, 0.15);
+  --color-success-border: rgba(46, 204, 113, 0.35);
+  --color-error: #FF6B6B;
+  --color-error-bg: rgba(231, 76, 60, 0.16);
+  --color-error-border: rgba(231, 76, 60, 0.38);
   --color-warning: #F39C12;
 
-  /* Star colors */
-  --color-star-filled: #F5A623;
-  --color-star-empty: #D4C9B8;
-  --color-star-hover: #E8971A;
+  /* Rating scale colors */
+  --color-star-filled: #F7E49A;
+  --color-star-empty: rgba(229, 193, 88, 0.18);
+  --color-star-hover: #FFF8F0;
 
   /* Admin palette */
-  --color-admin-bg: #1A1225;
-  --color-admin-surface: #241A33;
-  --color-admin-surface-alt: #2E2242;
-  --color-admin-border: #3D2E55;
-  --color-admin-text: #E8E0F0;
-  --color-admin-text-secondary: #A89CC0;
-  --color-admin-accent: #D4A843;
+  --color-admin-bg: #15060B;
+  --color-admin-surface: rgba(32, 12, 18, 0.9);
+  --color-admin-surface-alt: rgba(46, 16, 26, 0.8);
+  --color-admin-border: rgba(229, 193, 88, 0.22);
+  --color-admin-text: #FFF8F0;
+  --color-admin-text-secondary: #D4C2B0;
+  --color-admin-accent: #E5C158;
 
   /* Spacing scale */
   --space-xs: 0.25rem;
@@ -66,31 +80,32 @@
   --space-3xl: 4rem;
 
   /* Border radius */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(45, 27, 14, 0.06);
-  --shadow-md: 0 4px 12px rgba(45, 27, 14, 0.08);
-  --shadow-lg: 0 8px 30px rgba(45, 27, 14, 0.12);
-  --shadow-xl: 0 16px 50px rgba(45, 27, 14, 0.15);
-  --shadow-glow: 0 0 30px rgba(212, 168, 67, 0.2);
+  --shadow-sm: 0 4px 14px rgba(15, 4, 8, 0.45);
+  --shadow-md: 0 8px 26px rgba(15, 4, 8, 0.6);
+  --shadow-lg: 0 16px 42px rgba(15, 4, 8, 0.75);
+  --shadow-xl: 0 24px 60px rgba(15, 4, 8, 0.88);
+  --shadow-glow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  --shadow-glow-strong: 0 8px 28px rgba(0, 0, 0, 0.65);
 
   /* Typography */
   --font-heading: 'Outfit', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
 
   /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 450ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* =====================================================
-   Reset & Base
+   Reset & Base Settings
    ===================================================== */
 *,
 *::before,
@@ -105,6 +120,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
@@ -113,67 +129,125 @@ body {
   background-color: var(--color-bg);
   line-height: 1.6;
   min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(229, 193, 88, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
+
+/* Selection Color */
+::selection {
+  background: rgba(229, 193, 88, 0.3);
+  color: #FFFFFF;
 }
 
 /* =====================================================
-   Festive Background Pattern
+   Warm Royal Festive Background & Ambient Lighting
    ===================================================== */
 .festive-bg {
   position: relative;
   min-height: 100vh;
-  background: 
-    radial-gradient(ellipse at 20% 0%, rgba(212, 168, 67, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(232, 117, 26, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(192, 57, 43, 0.03) 0%, transparent 70%),
-    var(--color-bg);
+  background-color: var(--color-bg);
+  background-image: 
+    radial-gradient(circle at 50% -10%, rgba(229, 193, 88, 0.18) 0%, rgba(110, 26, 47, 0.45) 45%, #1B080E 85%),
+    radial-gradient(circle at 10% 45%, rgba(138, 21, 27, 0.35) 0%, transparent 55%),
+    radial-gradient(circle at 90% 75%, rgba(232, 117, 26, 0.18) 0%, transparent 55%);
+  background-attachment: fixed;
+  overflow: hidden;
 }
 
+/* Top Decorative Metallic Trim */
 .festive-bg::before {
   content: '';
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
   background: linear-gradient(
     90deg,
+    transparent,
     var(--color-deep-red),
+    var(--color-gold-light),
     var(--color-orange),
-    var(--color-gold),
-    var(--color-orange),
-    var(--color-deep-red)
+    var(--color-gold-light),
+    var(--color-deep-red),
+    transparent
   );
   z-index: 100;
 }
 
+/* Soft Warm Sparkle Particles */
+.festive-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 15% 25%, rgba(247, 228, 154, 0.35), transparent),
+    radial-gradient(2px 2px at 55% 65%, rgba(229, 193, 88, 0.3), transparent),
+    radial-gradient(1.5px 1.5px at 85% 20%, rgba(247, 228, 154, 0.35), transparent);
+  background-repeat: repeat;
+  background-size: 280px 280px;
+  animation: floatParticles 50s linear infinite;
+  pointer-events: none;
+  opacity: 0.45;
+  z-index: 1;
+}
+
 /* =====================================================
-   Typography
+   Typography & Warm Gold Text Gradients
    ===================================================== */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   color: var(--color-text-primary);
+  letter-spacing: -0.01em;
 }
 
 h1 { font-size: 2.5rem; }
-h2 { font-size: 1.75rem; }
+h2 { font-size: 1.8rem; }
 h3 { font-size: 1.35rem; }
-h4 { font-size: 1.125rem; }
+h4 { font-size: 1.15rem; }
 
 p {
   color: var(--color-text-secondary);
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 a {
-  color: var(--color-orange);
+  color: var(--color-gold-light);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-deep-red);
+  color: #FFFFFF;
+}
+
+/* Vibrant Gold Metallic Heading Utility */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFF8F0 0%, #F7E49A 45%, #E5C158 80%, #B88E2B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* =====================================================
@@ -184,13 +258,17 @@ a:hover {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
+  position: relative;
+  z-index: 2;
 }
 
 .container-narrow {
   width: 100%;
-  max-width: 560px;
+  max-width: 620px;
   margin: 0 auto;
   padding: 0 var(--space-lg);
+  position: relative;
+  z-index: 2;
 }
 
 .page-wrapper {
@@ -202,31 +280,45 @@ a:hover {
 .page-content {
   flex: 1;
   padding: var(--space-2xl) 0;
+  position: relative;
+  z-index: 2;
 }
 
 /* =====================================================
-   Card Component
+   Rich Velvet Glass Card Components
    ===================================================== */
 .card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border-light);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-base);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+  position: relative;
 }
 
 .card-elevated {
-  box-shadow: var(--shadow-md);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-border-strong);
 }
 
 .card-gold {
-  border-color: rgba(212, 168, 67, 0.3);
-  box-shadow: var(--shadow-md), var(--shadow-glow);
+  border-color: var(--color-gold);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, rgba(50, 18, 28, 0.95), rgba(34, 12, 19, 0.9));
+}
+
+.card:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 /* =====================================================
-   Button Components
+   Button Components (Warm Saffron & Royal Gold)
    ===================================================== */
 .btn {
   display: inline-flex;
@@ -234,38 +326,46 @@ a:hover {
   justify-content: center;
   gap: var(--space-sm);
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
-  padding: 0.85rem 2rem;
+  padding: 0.85rem 2.2rem;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-base);
   text-decoration: none;
   line-height: 1;
-  min-height: 48px;
+  min-height: 50px;
   white-space: nowrap;
+  position: relative;
+  letter-spacing: 0.02em;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .btn:focus-visible {
-  outline: 3px solid var(--color-gold);
+  outline: 2px solid var(--color-gold-light);
   outline-offset: 2px;
 }
 
+/* Primary Warm Saffron & Gold Button */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-orange), var(--color-deep-red));
-  color: var(--color-text-inverse);
-  box-shadow: 0 4px 15px rgba(232, 117, 26, 0.3);
+  background: linear-gradient(135deg, #E8751A 0%, #E5C158 50%, #B88E2B 100%);
+  color: #1B080E;
+  font-weight: 800;
+  box-shadow: 0 4px 16px rgba(232, 117, 26, 0.35);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 25px rgba(232, 117, 26, 0.4);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #F5A623 0%, #F7E49A 50%, #D4AF37 100%);
+  box-shadow: 0 6px 22px rgba(232, 117, 26, 0.5);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -274,56 +374,60 @@ a:hover {
 
 .btn-gold {
   background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
-  color: var(--color-text-primary);
-  box-shadow: 0 4px 15px rgba(212, 168, 67, 0.3);
+  color: #1B080E;
+  font-weight: 800;
+  box-shadow: 0 4px 16px rgba(229, 193, 88, 0.3);
 }
 
 .btn-gold:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 25px rgba(212, 168, 67, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 193, 88, 0.45);
 }
 
 .btn-secondary {
-  background: var(--color-surface);
+  background: rgba(50, 18, 28, 0.8);
   color: var(--color-text-primary);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  border-color: var(--color-gold);
-  background: var(--color-surface-alt);
+  border-color: var(--color-border-strong);
+  background: rgba(62, 22, 35, 0.9);
+  color: var(--color-gold-light);
 }
 
 .btn-ghost {
   background: transparent;
   color: var(--color-text-secondary);
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 1.2rem;
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: var(--color-surface-alt);
-  color: var(--color-text-primary);
+  background: rgba(229, 193, 88, 0.1);
+  color: var(--color-gold-light);
 }
 
 .btn-danger {
-  background: var(--color-error);
-  color: var(--color-text-inverse);
+  background: linear-gradient(135deg, var(--color-maroon), var(--color-deep-red));
+  color: #FFFFFF;
+  border: 1px solid rgba(231, 76, 60, 0.35);
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #C0392B;
+  background: linear-gradient(135deg, var(--color-deep-red), #C0392B);
 }
 
 .btn-sm {
   font-size: 0.875rem;
-  padding: 0.5rem 1.25rem;
-  min-height: 38px;
+  padding: 0.55rem 1.35rem;
+  min-height: 40px;
 }
 
 .btn-lg {
-  font-size: 1.125rem;
-  padding: 1rem 2.5rem;
-  min-height: 56px;
+  font-size: 1.05rem;
+  padding: 0.95rem 2.4rem;
+  min-height: 54px;
 }
 
 .btn-full {
@@ -331,22 +435,22 @@ a:hover {
 }
 
 .btn-select {
-  background: var(--color-surface-alt);
-  color: var(--color-orange);
-  border: 1.5px solid var(--color-border);
+  background: rgba(229, 193, 88, 0.12);
+  color: var(--color-gold-light);
+  border: 1px solid var(--color-border);
   font-size: 0.875rem;
   padding: 0.45rem 1.2rem;
-  min-height: 36px;
+  min-height: 38px;
   border-radius: var(--radius-sm);
 }
 
 .btn-select:hover:not(:disabled) {
-  border-color: var(--color-orange);
-  background: rgba(232, 117, 26, 0.08);
+  border-color: var(--color-gold);
+  background: rgba(229, 193, 88, 0.22);
 }
 
 /* =====================================================
-   Form Components
+   Rich Glass Form Components
    ===================================================== */
 .form-group {
   margin-bottom: var(--space-lg);
@@ -356,28 +460,29 @@ a:hover {
   display: block;
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 0.925rem;
+  font-size: 0.95rem;
   color: var(--color-text-primary);
   margin-bottom: var(--space-sm);
 }
 
 .form-input {
   width: 100%;
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1.1rem;
   font-family: var(--font-body);
   font-size: 1rem;
   color: var(--color-text-primary);
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
+  background: rgba(26, 9, 15, 0.85);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
-  min-height: 48px;
+  min-height: 50px;
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--color-gold);
-  box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.15);
+  background: rgba(32, 11, 18, 0.95);
+  box-shadow: 0 0 0 2px rgba(229, 193, 88, 0.2);
 }
 
 .form-input::placeholder {
@@ -386,13 +491,13 @@ a:hover {
 
 .form-textarea {
   resize: vertical;
-  min-height: 100px;
-  max-height: 200px;
+  min-height: 110px;
+  max-height: 220px;
 }
 
 .form-error {
   color: var(--color-error);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   margin-top: var(--space-xs);
 }
 
@@ -403,7 +508,7 @@ a:hover {
 }
 
 /* =====================================================
-   Search Input
+   Search Input & Autocomplete Dropdown
    ===================================================== */
 .search-wrapper {
   position: relative;
@@ -412,31 +517,30 @@ a:hover {
 
 .search-icon {
   position: absolute;
-  left: 1rem;
+  left: 1.1rem;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.1rem;
-  color: var(--color-text-muted);
+  color: var(--color-gold-muted);
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  padding: 0.9rem 1.1rem 0.9rem 2.9rem;
   font-family: var(--font-body);
   font-size: 1rem;
   color: var(--color-text-primary);
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
+  background: rgba(26, 9, 15, 0.85);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
-  min-height: 48px;
+  min-height: 50px;
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--color-gold);
-  box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.15);
 }
 
 .search-input::placeholder {
@@ -444,14 +548,15 @@ a:hover {
 }
 
 /* =====================================================
-   Table / List Component (spreadsheet-style)
+   Dark Glass Data Table Component
    ===================================================== */
 .data-table-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  border: 1px solid var(--color-border-light);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
+  backdrop-filter: blur(16px);
 }
 
 .data-table {
@@ -461,16 +566,16 @@ a:hover {
 }
 
 .data-table th {
-  background: var(--color-surface-alt);
+  background: rgba(50, 18, 28, 0.92);
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.825rem;
+  font-weight: 700;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-text-muted);
-  padding: 0.85rem 1rem;
+  letter-spacing: 0.06em;
+  color: var(--color-gold-light);
+  padding: 0.95rem 1.1rem;
   text-align: left;
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
   position: sticky;
   top: 0;
@@ -484,17 +589,18 @@ a:hover {
 }
 
 .data-table th.sortable:hover {
-  color: var(--color-orange);
+  color: #FFFFFF;
 }
 
 .data-table th.sorted {
-  color: var(--color-orange);
+  color: var(--color-gold-light);
 }
 
 .data-table td {
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1.1rem;
   border-bottom: 1px solid var(--color-border-light);
   vertical-align: middle;
+  color: var(--color-text-primary);
 }
 
 .data-table tbody tr {
@@ -502,7 +608,7 @@ a:hover {
 }
 
 .data-table tbody tr:hover {
-  background: var(--color-surface-alt);
+  background: rgba(229, 193, 88, 0.08);
 }
 
 .data-table tbody tr:last-child td {
@@ -532,104 +638,117 @@ a:hover {
 }
 
 /* =====================================================
-   Star Rating Component
+   10-Point Rating Component (Rich Festive Buttons)
    ===================================================== */
-.star-rating {
+.point-rating-wrapper {
   display: flex;
-  gap: 4px;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--space-xs);
 }
 
-.star-rating-input {
-  display: flex;
+.point-rating-input {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
   gap: 6px;
-  align-items: center;
+  width: 100%;
 }
 
-.star-btn {
-  background: none;
-  border: none;
-  padding: 4px;
-  cursor: pointer;
-  font-size: 2rem;
-  line-height: 1;
-  color: var(--color-star-empty);
-  transition: all var(--transition-fast);
-  border-radius: var(--radius-sm);
-  min-width: 44px;
-  min-height: 44px;
+.point-btn {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(50, 18, 28, 0.85);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 8px 0;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 44px;
 }
 
-.star-btn:focus-visible {
-  outline: 2px solid var(--color-gold);
+.point-btn:hover {
+  background: rgba(68, 24, 38, 0.95);
+  color: #FFFFFF;
+  border-color: var(--color-gold);
+}
+
+.point-btn.active {
+  background: linear-gradient(135deg, #F7E49A 0%, #E5C158 50%, #B88E2B 100%);
+  color: #1B080E;
+  font-weight: 800;
+  border-color: #FFF8F0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.point-btn:focus-visible {
+  outline: 2px solid var(--color-gold-light);
   outline-offset: 2px;
 }
 
-.star-btn.filled {
-  color: var(--color-star-filled);
+.star-label-badge {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-gold-light);
+  margin-top: 4px;
 }
 
-.star-btn:hover {
-  color: var(--color-star-hover);
-  transform: scale(1.15);
-}
-
-.star-label {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  margin-left: var(--space-sm);
-  min-width: 70px;
-}
-
-.star-display {
-  color: var(--color-star-filled);
-  font-size: 0.9rem;
+@media (max-width: 600px) {
+  .point-rating-input {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
 }
 
 /* =====================================================
-   Evaluation Question Card
+   Evaluation Question Cards (Rich Velvet Maroon Finish)
    ===================================================== */
 .eval-question {
-  padding: var(--space-lg);
-  margin-bottom: var(--space-md);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-lg);
   background: var(--color-surface);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-md);
-  transition: border-color var(--transition-fast);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+  position: relative;
 }
 
 .eval-question:hover {
-  border-color: var(--color-border);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
 }
 
 .eval-question.has-error {
   border-color: var(--color-error);
-  background: var(--color-error-bg);
+  background: rgba(60, 16, 24, 0.9);
 }
 
 .eval-question-number {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.8rem;
-  color: var(--color-gold-dark);
+  font-size: 0.82rem;
+  color: var(--color-gold);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   margin-bottom: var(--space-xs);
 }
 
 .eval-question-label {
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.05rem;
+  font-weight: 700;
+  font-size: 1.15rem;
   color: var(--color-text-primary);
   margin-bottom: var(--space-xs);
 }
 
 .eval-question-text {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--color-text-secondary);
   margin-bottom: var(--space-md);
 }
@@ -642,26 +761,26 @@ a:hover {
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
-  background: linear-gradient(135deg, rgba(212, 168, 67, 0.08), rgba(232, 117, 26, 0.05));
-  border: 1.5px solid rgba(212, 168, 67, 0.3);
+  background: linear-gradient(135deg, rgba(229, 193, 88, 0.15), rgba(76, 18, 33, 0.6));
+  border: 1.5px solid var(--color-gold);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-xl);
 }
 
 .selected-mandal-icon {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 }
 
 .selected-mandal-label {
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: var(--color-gold-light);
   font-weight: 500;
 }
 
 .selected-mandal-name {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--color-text-primary);
 }
 
@@ -673,25 +792,27 @@ a:hover {
   align-items: center;
   gap: 4px;
   font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.65rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
   border-radius: var(--radius-full);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .badge-active {
   background: var(--color-success-bg);
   color: var(--color-success);
+  border: 1px solid var(--color-success-border);
 }
 
 .badge-inactive {
   background: var(--color-error-bg);
   color: var(--color-error);
+  border: 1px solid var(--color-error-border);
 }
 
 /* =====================================================
-   Stats Cards
+   Stats Grid & Stat Cards
    ===================================================== */
 .stats-grid {
   display: grid;
@@ -702,29 +823,31 @@ a:hover {
 
 .stat-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border-light);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   transition: all var(--transition-base);
 }
 
 .stat-card:hover {
-  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
 }
 
 .stat-card-label {
-  font-size: 0.825rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--color-gold-light);
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   margin-bottom: var(--space-sm);
 }
 
 .stat-card-value {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: var(--color-text-primary);
   line-height: 1;
 }
@@ -736,13 +859,14 @@ a:hover {
 }
 
 /* =====================================================
-   Modal / Dialog
+   Modal / Dialog Component
    ===================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(45, 27, 14, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 4, 8, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -752,19 +876,22 @@ a:hover {
 }
 
 .modal-content {
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
+  background: rgba(42, 14, 23, 0.96);
+  border: 1.5px solid var(--color-gold);
+  border-radius: var(--radius-xl);
   padding: var(--space-xl);
-  max-width: 480px;
+  max-width: 500px;
   width: 100%;
   box-shadow: var(--shadow-xl);
-  animation: slideUp 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
 .modal-title {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
+  color: var(--color-text-primary);
   margin-bottom: var(--space-md);
 }
 
@@ -791,40 +918,41 @@ a:hover {
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--color-border);
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(229, 193, 88, 0.18);
   border-top-color: var(--color-gold);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 /* =====================================================
-   Alert / Message
+   Alert / Notification Banner
    ===================================================== */
 .alert {
   padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-md);
   font-size: 0.925rem;
   line-height: 1.5;
+  backdrop-filter: blur(10px);
 }
 
 .alert-error {
   background: var(--color-error-bg);
-  color: var(--color-error);
-  border: 1px solid rgba(231, 76, 60, 0.2);
+  color: #FF6B6B;
+  border: 1px solid var(--color-error-border);
 }
 
 .alert-success {
   background: var(--color-success-bg);
-  color: var(--color-success);
-  border: 1px solid rgba(39, 174, 96, 0.2);
+  color: #2ECC71;
+  border: 1px solid var(--color-success-border);
 }
 
 .alert-info {
-  background: rgba(212, 168, 67, 0.08);
-  color: var(--color-gold-dark);
-  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: rgba(229, 193, 88, 0.12);
+  color: var(--color-gold-light);
+  border: 1px solid rgba(229, 193, 88, 0.28);
 }
 
 /* =====================================================
@@ -833,18 +961,16 @@ a:hover {
 .page-header {
   text-align: center;
   margin-bottom: var(--space-2xl);
+  position: relative;
 }
 
 .page-header h1 {
-  background: linear-gradient(135deg, var(--color-deep-red), var(--color-orange));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   margin-bottom: var(--space-sm);
 }
 
 .page-header p {
   font-size: 1.05rem;
+  color: var(--color-text-secondary);
 }
 
 /* =====================================================
@@ -853,22 +979,27 @@ a:hover {
 .thank-you-container {
   text-align: center;
   padding: var(--space-3xl) var(--space-lg);
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
 }
 
 .thank-you-icon {
   font-size: 4rem;
   margin-bottom: var(--space-lg);
-  animation: bounceIn 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: bounceIn 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .thank-you-title {
-  font-size: 2rem;
-  color: var(--color-success);
+  font-size: 2.2rem;
+  color: var(--color-gold-light);
   margin-bottom: var(--space-md);
 }
 
 .thank-you-message {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--color-text-secondary);
   max-width: 480px;
   margin: 0 auto;
@@ -876,7 +1007,7 @@ a:hover {
 }
 
 /* =====================================================
-   Landing Page Hero
+   Landing Page Hero Section
    ===================================================== */
 .hero {
   display: flex;
@@ -890,42 +1021,48 @@ a:hover {
 }
 
 .hero-ornament {
-  font-size: 3.5rem;
+  font-size: 3.8rem;
   margin-bottom: var(--space-lg);
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
 }
 
 .hero h1 {
-  font-size: 2.75rem;
+  font-size: 2.85rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--color-deep-red), var(--color-orange), var(--color-gold));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   margin-bottom: var(--space-sm);
   letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-subtitle {
   font-family: var(--font-heading);
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: var(--color-gold-dark);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-gold-light);
   margin-bottom: var(--space-xl);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-text {
   font-size: 1.1rem;
   color: var(--color-text-secondary);
-  max-width: 520px;
+  max-width: 540px;
   margin: 0 auto var(--space-2xl);
   line-height: 1.7;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-cta {
   margin-bottom: var(--space-xl);
+  position: relative;
+  z-index: 1;
 }
 
 .hero-note {
@@ -933,28 +1070,31 @@ a:hover {
   color: var(--color-text-muted);
   font-style: italic;
   max-width: 400px;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-divider {
-  width: 80px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-gold), var(--color-orange));
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
   border: none;
-  border-radius: 2px;
   margin: var(--space-lg) auto;
 }
 
 /* =====================================================
-   Admin Layout
+   Admin Layout & Controls
    ===================================================== */
 .admin-layout {
   min-height: 100vh;
   background: var(--color-admin-bg);
   color: var(--color-admin-text);
+  position: relative;
 }
 
 .admin-header {
   background: var(--color-admin-surface);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--color-admin-border);
   padding: var(--space-md) var(--space-lg);
   display: flex;
@@ -968,7 +1108,7 @@ a:hover {
 .admin-header-title {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--color-admin-accent);
 }
 
@@ -978,10 +1118,10 @@ a:hover {
 }
 
 .admin-nav-link {
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.1rem;
   border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--color-admin-text-secondary);
   transition: all var(--transition-fast);
   text-decoration: none;
@@ -994,7 +1134,8 @@ a:hover {
 .admin-nav-link:hover,
 .admin-nav-link.active {
   background: var(--color-admin-surface-alt);
-  color: var(--color-admin-text);
+  color: var(--color-gold-light);
+  border: 1px solid var(--color-border-light);
 }
 
 .admin-content {
@@ -1004,7 +1145,7 @@ a:hover {
 }
 
 .admin-page-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: var(--color-admin-text);
   margin-bottom: var(--space-xs);
 }
@@ -1014,7 +1155,7 @@ a:hover {
   margin-bottom: var(--space-xl);
 }
 
-/* Admin stat cards */
+/* Admin Stat Cards */
 .admin-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1027,6 +1168,11 @@ a:hover {
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
+  transition: all var(--transition-base);
+}
+
+.admin-stat-card:hover {
+  border-color: var(--color-border-strong);
 }
 
 .admin-stat-label {
@@ -1040,7 +1186,7 @@ a:hover {
 .admin-stat-value {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   color: var(--color-admin-accent);
 }
 
@@ -1050,12 +1196,13 @@ a:hover {
   margin-top: var(--space-xs);
 }
 
-/* Admin table */
+/* Admin Table */
 .admin-table-wrapper {
   overflow-x: auto;
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-md);
   background: var(--color-admin-surface);
+  backdrop-filter: blur(16px);
 }
 
 .admin-table {
@@ -1066,13 +1213,13 @@ a:hover {
 
 .admin-table th {
   background: var(--color-admin-surface-alt);
-  color: var(--color-admin-text-secondary);
+  color: var(--color-gold-light);
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.75rem;
+  font-weight: 700;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0.85rem 1rem;
+  letter-spacing: 0.05em;
+  padding: 0.9rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--color-admin-border);
   white-space: nowrap;
@@ -1082,7 +1229,7 @@ a:hover {
 }
 
 .admin-table th:hover {
-  color: var(--color-admin-accent);
+  color: #FFFFFF;
 }
 
 .admin-table th.sorted {
@@ -1090,7 +1237,7 @@ a:hover {
 }
 
 .admin-table td {
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1rem;
   border-bottom: 1px solid var(--color-admin-border);
   color: var(--color-admin-text);
 }
@@ -1101,19 +1248,19 @@ a:hover {
 }
 
 .admin-table tbody tr:hover {
-  background: var(--color-admin-surface-alt);
+  background: rgba(229, 193, 88, 0.08);
 }
 
 .admin-table tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Admin search */
+/* Admin Search Input */
 .admin-search {
   width: 100%;
-  max-width: 350px;
-  padding: 0.65rem 1rem 0.65rem 2.5rem;
-  background: var(--color-admin-surface);
+  max-width: 360px;
+  padding: 0.7rem 1rem 0.7rem 2.6rem;
+  background: rgba(26, 9, 15, 0.85);
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-sm);
   color: var(--color-admin-text);
@@ -1131,16 +1278,16 @@ a:hover {
   color: var(--color-admin-text-secondary);
 }
 
-/* Admin form */
+/* Admin Form Controls */
 .admin-form-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  background: var(--color-admin-surface-alt);
+  padding: 0.8rem 1rem;
+  background: rgba(26, 9, 15, 0.85);
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-sm);
   color: var(--color-admin-text);
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.925rem;
 }
 
 .admin-form-input:focus {
@@ -1150,34 +1297,35 @@ a:hover {
 
 .admin-form-label {
   display: block;
-  font-size: 0.825rem;
+  font-size: 0.85rem;
   color: var(--color-admin-text-secondary);
   margin-bottom: var(--space-xs);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .admin-btn {
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: 0.6rem 1.25rem;
+  padding: 0.65rem 1.35rem;
   border-radius: var(--radius-sm);
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all var(--transition-fast);
   border: none;
-  min-height: 40px;
+  min-height: 42px;
 }
 
 .admin-btn-primary {
-  background: var(--color-admin-accent);
-  color: var(--color-admin-bg);
+  background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+  color: #1B080E;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 .admin-btn-primary:hover {
-  background: var(--color-gold-light);
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold));
 }
 
 .admin-btn-secondary {
@@ -1188,24 +1336,25 @@ a:hover {
 
 .admin-btn-secondary:hover {
   border-color: var(--color-admin-accent);
+  color: var(--color-gold-light);
 }
 
 .admin-btn-danger {
   background: rgba(231, 76, 60, 0.15);
-  color: var(--color-error);
-  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #FF6B6B;
+  border: 1px solid rgba(231, 76, 60, 0.35);
 }
 
 .admin-btn-danger:hover {
-  background: rgba(231, 76, 60, 0.25);
+  background: rgba(231, 76, 60, 0.3);
 }
 
-/* Admin modal */
+/* Admin Modal */
 .admin-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 4, 8, 0.88);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1215,39 +1364,39 @@ a:hover {
 }
 
 .admin-modal {
-  background: var(--color-admin-surface);
+  background: rgba(38, 14, 22, 0.96);
   border: 1px solid var(--color-admin-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
-  max-width: 520px;
+  max-width: 540px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: slideUp 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  animation: slideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .admin-modal-title {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--color-admin-text);
   margin-bottom: var(--space-lg);
 }
 
-/* Back link */
+/* Back Link */
 .back-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  color: var(--color-admin-text-secondary);
-  font-size: 0.875rem;
+  color: var(--color-gold-light);
+  font-size: 0.9rem;
   margin-bottom: var(--space-lg);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 .back-link:hover {
-  color: var(--color-admin-accent);
+  color: #FFFFFF;
 }
 
-/* Toggle switch */
+/* Toggle Switch */
 .toggle-wrapper {
   display: flex;
   align-items: center;
@@ -1258,28 +1407,30 @@ a:hover {
   position: relative;
   width: 48px;
   height: 26px;
-  background: var(--color-admin-border);
+  background: rgba(229, 193, 88, 0.15);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: background var(--transition-fast);
-  border: none;
   padding: 0;
 }
 
 .toggle.active {
   background: var(--color-success);
+  border-color: var(--color-success);
 }
 
 .toggle::after {
   content: '';
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
   width: 20px;
   height: 20px;
   background: white;
   border-radius: 50%;
   transition: transform var(--transition-fast);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .toggle.active::after {
@@ -1287,7 +1438,7 @@ a:hover {
 }
 
 /* =====================================================
-   Animations
+   Keyframe Animations
    ===================================================== */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -1297,7 +1448,7 @@ a:hover {
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -1308,13 +1459,13 @@ a:hover {
 @keyframes bounceIn {
   0% {
     opacity: 0;
-    transform: scale(0.3);
+    transform: scale(0.4);
   }
   50% {
-    transform: scale(1.1);
+    transform: scale(1.08);
   }
   70% {
-    transform: scale(0.95);
+    transform: scale(0.96);
   }
   100% {
     opacity: 1;
@@ -1324,11 +1475,20 @@ a:hover {
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-12px); }
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes floatParticles {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 500px -500px;
+  }
 }
 
 .animate-fade-in {
@@ -1336,23 +1496,23 @@ a:hover {
 }
 
 .animate-slide-up {
-  animation: slideUp 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* =====================================================
    Responsive Design
    ===================================================== */
 @media (max-width: 768px) {
-  h1 { font-size: 1.75rem; }
-  h2 { font-size: 1.4rem; }
-  h3 { font-size: 1.15rem; }
+  h1 { font-size: 1.85rem; }
+  h2 { font-size: 1.45rem; }
+  h3 { font-size: 1.2rem; }
 
   .hero h1 {
-    font-size: 2rem;
+    font-size: 2.1rem;
   }
 
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
 
   .hero-text {
@@ -1360,7 +1520,7 @@ a:hover {
   }
 
   .hero-ornament {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
   }
 
   .container,
@@ -1374,7 +1534,7 @@ a:hover {
 
   .btn-lg {
     font-size: 1rem;
-    padding: 0.85rem 2rem;
+    padding: 0.9rem 2rem;
   }
 
   .modal-content {
@@ -1409,19 +1569,13 @@ a:hover {
     overflow-x: auto;
   }
 
-  .star-btn {
-    font-size: 1.75rem;
-    min-width: 40px;
-    min-height: 40px;
-  }
-
   .eval-question {
-    padding: var(--space-md);
+    padding: var(--space-lg);
   }
 
   .data-table th,
   .data-table td {
-    padding: 0.7rem 0.75rem;
+    padding: 0.75rem 0.8rem;
   }
 }
 
@@ -1431,11 +1585,11 @@ a:hover {
   }
 
   .admin-stats-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .hero h1 {
-    font-size: 1.65rem;
+    font-size: 1.75rem;
   }
 }
 
@@ -1445,7 +1599,7 @@ a:hover {
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-muted { color: var(--color-text-muted); }
-.text-gold { color: var(--color-gold-dark); }
+.text-gold { color: var(--color-gold-light); }
 .text-success { color: var(--color-success); }
 .text-error { color: var(--color-error); }
 

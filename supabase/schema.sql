@@ -1,6 +1,7 @@
 -- =====================================================
 -- Koppal Ganapathi Utsava 2026 — Database Schema
 -- Run this in your Supabase SQL Editor
+-- 10 Questions & 10-Point Rating System
 -- =====================================================
 
 -- =====================================================
@@ -84,22 +85,24 @@ CREATE INDEX IF NOT EXISTS idx_mandals_name ON public.mandals USING gin(to_tsvec
 CREATE INDEX IF NOT EXISTS idx_mandals_active ON public.mandals(is_active);
 
 -- =====================================================
--- 3. REVIEWS TABLE
--- Public evaluations
+-- 3. REVIEWS TABLE (10 Questions, 1 to 10 Points Scale)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS public.reviews (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   mandal_id UUID NOT NULL REFERENCES public.mandals(id) ON DELETE CASCADE,
-  idol_rating SMALLINT NOT NULL CHECK (idol_rating BETWEEN 1 AND 5),
-  decoration_rating SMALLINT NOT NULL CHECK (decoration_rating BETWEEN 1 AND 5),
-  lighting_rating SMALLINT NOT NULL CHECK (lighting_rating BETWEEN 1 AND 5),
-  creativity_rating SMALLINT NOT NULL CHECK (creativity_rating BETWEEN 1 AND 5),
-  cleanliness_rating SMALLINT NOT NULL CHECK (cleanliness_rating BETWEEN 1 AND 5),
-  eco_friendly_rating SMALLINT NOT NULL CHECK (eco_friendly_rating BETWEEN 1 AND 5),
-  cultural_rating SMALLINT NOT NULL CHECK (cultural_rating BETWEEN 1 AND 5),
-  overall_rating SMALLINT NOT NULL CHECK (overall_rating BETWEEN 1 AND 5),
+  idol_rating SMALLINT NOT NULL CHECK (idol_rating BETWEEN 1 AND 10),
+  decoration_rating SMALLINT NOT NULL CHECK (decoration_rating BETWEEN 1 AND 10),
+  lighting_rating SMALLINT NOT NULL CHECK (lighting_rating BETWEEN 1 AND 10),
+  creativity_rating SMALLINT NOT NULL CHECK (creativity_rating BETWEEN 1 AND 10),
+  cleanliness_rating SMALLINT NOT NULL CHECK (cleanliness_rating BETWEEN 1 AND 10),
+  eco_friendly_rating SMALLINT NOT NULL CHECK (eco_friendly_rating BETWEEN 1 AND 10),
+  cultural_rating SMALLINT NOT NULL CHECK (cultural_rating BETWEEN 1 AND 10),
+  discipline_rating SMALLINT NOT NULL CHECK (discipline_rating BETWEEN 1 AND 10),
+  facilities_rating SMALLINT NOT NULL CHECK (facilities_rating BETWEEN 1 AND 10),
+  overall_rating SMALLINT NOT NULL CHECK (overall_rating BETWEEN 1 AND 10),
   feedback TEXT CHECK (char_length(feedback) <= 500),
+  photo_url TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -132,12 +135,11 @@ CREATE INDEX IF NOT EXISTS idx_reviews_mandal_id ON public.reviews(mandal_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_created_at ON public.reviews(created_at DESC);
 
 -- =====================================================
--- 4. ADMIN VIEWS (for dashboard aggregation)
--- These are database views that aggregate review data
--- Only accessible by admins via RLS
+-- 4. ADMIN VIEWS (10-Question Aggregation)
 -- =====================================================
 
 -- Mandal statistics view
+DROP VIEW IF EXISTS public.mandal_stats CASCADE;
 CREATE OR REPLACE VIEW public.mandal_stats AS
 SELECT
   m.id,
@@ -150,7 +152,8 @@ SELECT
       AVG(
         (r.idol_rating + r.decoration_rating + r.lighting_rating +
          r.creativity_rating + r.cleanliness_rating + r.eco_friendly_rating +
-         r.cultural_rating + r.overall_rating)::NUMERIC / 8.0
+         r.cultural_rating + r.discipline_rating + r.facilities_rating +
+         r.overall_rating)::NUMERIC / 10.0
       ), 2
     ), 0
   ) AS average_rating,
@@ -161,6 +164,8 @@ SELECT
   COALESCE(ROUND(AVG(r.cleanliness_rating::NUMERIC), 2), 0) AS avg_cleanliness,
   COALESCE(ROUND(AVG(r.eco_friendly_rating::NUMERIC), 2), 0) AS avg_eco_friendly,
   COALESCE(ROUND(AVG(r.cultural_rating::NUMERIC), 2), 0) AS avg_cultural,
+  COALESCE(ROUND(AVG(r.discipline_rating::NUMERIC), 2), 0) AS avg_discipline,
+  COALESCE(ROUND(AVG(r.facilities_rating::NUMERIC), 2), 0) AS avg_facilities,
   COALESCE(ROUND(AVG(r.overall_rating::NUMERIC), 2), 0) AS avg_overall
 FROM public.mandals m
 LEFT JOIN public.reviews r ON m.id = r.mandal_id

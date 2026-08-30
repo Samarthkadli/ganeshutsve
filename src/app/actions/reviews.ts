@@ -10,17 +10,17 @@ export async function submitReview(data: ReviewFormData) {
     return { error: 'Please enter the Ganesh Mandal name.' };
   }
 
-  // Validate all ratings are 1-5
+  // Validate all 10 ratings are 1-10 points
   const ratingFields = [
     'idol_rating', 'decoration_rating', 'lighting_rating',
     'creativity_rating', 'cleanliness_rating', 'eco_friendly_rating',
-    'cultural_rating', 'overall_rating'
+    'cultural_rating', 'discipline_rating', 'facilities_rating', 'overall_rating'
   ] as const;
 
   for (const field of ratingFields) {
     const value = data[field];
-    if (!value || value < 1 || value > 5 || !Number.isInteger(value)) {
-      return { error: `Invalid rating for ${field.replace('_rating', '').replace('_', ' ')}. Must be 1-5.` };
+    if (!value || value < 1 || value > 10 || !Number.isInteger(value)) {
+      return { error: `Invalid rating for ${field.replace('_rating', '').replace('_', ' ')}. Must be between 1 and 10.` };
     }
   }
 
@@ -88,7 +88,7 @@ export async function submitReview(data: ReviewFormData) {
       return { error: 'ಮಂಡಳಿ ID ಸಿಗಲಿಲ್ಲ / Could not resolve Mandal ID. Please try again.' };
     }
 
-    // 3. Insert review
+    // 3. Insert review with 10 ratings
     const insertPayload: Record<string, unknown> = {
       mandal_id: mandalId,
       idol_rating: data.idol_rating,
@@ -98,8 +98,11 @@ export async function submitReview(data: ReviewFormData) {
       cleanliness_rating: data.cleanliness_rating,
       eco_friendly_rating: data.eco_friendly_rating,
       cultural_rating: data.cultural_rating,
+      discipline_rating: data.discipline_rating,
+      facilities_rating: data.facilities_rating,
       overall_rating: data.overall_rating,
       feedback: data.feedback?.trim() || null,
+      photo_url: data.photo || null,
     };
 
     if (user?.id) {
@@ -110,8 +113,22 @@ export async function submitReview(data: ReviewFormData) {
       .from('reviews')
       .insert(insertPayload);
 
+    if (!insertError && data.photo) {
+      // Set mandal image_url if not set
+      await supabase
+        .from('mandals')
+        .update({ image_url: data.photo })
+        .eq('id', mandalId)
+        .or('image_url.eq.,image_url.is.null');
+    }
+
     if (insertError) {
       console.error('Review insert error:', insertError);
+      if (insertError.code === '23505' || insertError.message?.includes('unique_user_review')) {
+        return {
+          error: 'ನೀವು ಈಗಾಗಲೇ ಈ ಮಂಡಳಿಗೆ ಮೌಲ್ಯಮಾಪನ ಸಲ್ಲಿಕೆ ಮಾಡಿದ್ದೀರಿ / You have already submitted an evaluation for this Mandal. Thank you!',
+        };
+      }
       return {
         error: `ಮೌಲ್ಯಮಾಪನ ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ / Review could not be saved: ${insertError.message}. Please run the SQL policy fix in Supabase.`,
       };
