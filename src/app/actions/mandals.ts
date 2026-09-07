@@ -5,6 +5,131 @@ import type { Mandal, MandalFormData, MandalStats } from '@/types/database';
 
 const SAMPLE_MANDALS_FALLBACK: Mandal[] = [];
 
+const TRANSLITERATION_DICTIONARY: [string, string][] = [
+  ['ಶ್ರೀ', 'Shree Sri Shri'],
+  ['ಗಜಾನನೋತ್ಸವ', 'Gajananotsava'],
+  ['ಗಜಾನನ', 'Gajanana Gajanand'],
+  ['ಗಜನಾನ', 'Gajanana'],
+  ['ಗಣೇಶೋತ್ಸವ', 'Ganeshotsava'],
+  ['ಗಣೇಶಾಯ', 'Ganeshaya'],
+  ['ಗಣೇಶ', 'Ganesh Ganesa'],
+  ['ಗಣಪತಿ', 'Ganapati Ganapathi'],
+  ['ಗಣಪ', 'Ganapa'],
+  ['ಮಿತ್ರ', 'Mitra'],
+  ['ಮಂಡಳಿ', 'Mandali Mandala'],
+  ['ಮಂಡಳ', 'Mandala'],
+  ['ಸಂಘ', 'Sangha Sanga'],
+  ['ಸಮಿತ್', 'Samiti'],
+  ['ಸಮಿತ್ರ', 'Samitra'],
+  ['ಬಳಗ', 'Balaga'],
+  ['ಯುವಕ', 'Yuvaka Yuva'],
+  ['ತರುಣ', 'Taruna'],
+  ['ಗೆಳೆಯರ', 'Geleyara'],
+  ['ಸ್ನೇಹಿತರ', 'Snehitara'],
+  ['ಕುರುಬರ', 'Kurubara Kuruba'],
+  ['ರಾಜಾ', 'Raja Raj'],
+  ['ರಾಜ', 'Raja Raj'],
+  ['ರಾಜಾಜಿ', 'Rajaji'],
+  ['ಗುತ್ತೂರು', 'Gutturu Guttur'],
+  ['ಮಾರುತೇಶ್ವರ', 'Maruteshwara'],
+  ['ಮಾರುತಿ', 'Maruti'],
+  ['ಲೋಕೋಪಯೋಗಿ', 'Lokopayogi PWD'],
+  ['ಇಲಾಖೆ', 'Ilakhe Department'],
+  ['ಈಶ್ವರ', 'Ishwara Ishwar Eshwar'],
+  ['ಸಪ್ತಗಿರಿ', 'Saptagiri'],
+  ['ಜಯ', 'Jaya Jai'],
+  ['ಜೈ', 'Jai Jaya'],
+  ['ಗವಿಸಿದ್ಧೇಶ್ವರ', 'Gavisiddheshwara Gavisiddeshwara'],
+  ['ಗವಿಸಿದ್ಧ', 'Gavisiddha'],
+  ['ಗವಿಶ್ರೀ', 'Gavishree Gavisri'],
+  ['ಶಿವಶಾಂತವೀರ', 'Shivashantaveera'],
+  ['ನವಚೇತನ', 'Navachetana'],
+  ['ನೇಹರು', 'Nehru'],
+  ['ವಿಶ್ವೇಶ್ವರಯ್ಯ', 'Visvesvaraya Vishweshwarayya'],
+  ['ನಗರ', 'Nagara Nagar'],
+  ['ಬಾಲವಿನಾಯಕ', 'Bala Vinayaka'],
+  ['ಬಾಲ', 'Bala Bal'],
+  ['ವಿನಾಯಕ', 'Vinayaka Vinayak'],
+  ['ಗಜಕರ್ಣ', 'Gajakarna'],
+  ['ವಿಘ್ನೇಶ್ವರ', 'Vighneshwara Vighneshvara Vigneswara'],
+  ['ವಿಘ್ನ', 'Vighna Vigna'],
+  ['ಭಾವಸಾರ', 'Bhavasara Bhavasar'],
+  ['ಕ್ಷತ್ರಿಯ', 'Kshatriya Kshatriy'],
+  ['ಖಾಟೀಕ್', 'Khatik Khateek'],
+  ['ಶಕ್ತಿ', 'Shakti Sakthi'],
+  ['ಸಿದ್ದೇಶ್ವರ', 'Siddheshwara Siddeshwara'],
+  ['ಕಲ್ಯಾಣ', 'Kalyana Kalyan'],
+  ['ಮಹಾ', 'Maha'],
+  ['ವಿಜಯವಿನಾಯಕ', 'Vijaya Vinayaka'],
+  ['ವಿಜಯ', 'Vijaya Vijay'],
+  ['ಸಂಪತ್', 'Sampat Sampath'],
+  ['ಕಾಮಧೇನು', 'Kamadhenu'],
+  ['ಮಹಾನಾಯಕ', 'Mahanayaka'],
+  ['ಪುನೀತರಾಜಕುಮಾರ', 'Puneeth Rajkumar Puneet'],
+  ['ಅಭಿಮಾನಿ', 'Abhimani'],
+  ['ಇಂದ್ರಕೀಲ', 'Indrakeela Indrakila'],
+  ['ರಾಮಧರ್ಮ', 'Ramadharma Ramadharm'],
+  ['ಸಿದ್ಧಿ', 'Siddhi Siddi'],
+  ['ಸಿದ್ರಾವೇಶ್ವರ', 'Sidraveshwara'],
+  ['ರಾಘವೇಂದ್ರ', 'Raghavendra Raghvendra'],
+  ['ಲಿಟಲ್', 'Little'],
+  ['ಮಾಸ್ಟರ್', 'Master'],
+  ['ಕೇತೇಶ್ವರ', 'Ketheshwara Keteshwara'],
+  ['ಸೂರ್ಯವಂಶ', 'Suryavamsa Suryavamsha'],
+  ['ವಕ್ರತುಂಡ', 'Vakratunda Vakratund'],
+  ['ವರಸಿದ್ಧಿ', 'Varasiddhi Varasiddi'],
+  ['ಬನ್ನಿ', 'Banni'],
+  ['ಮಹಾಂಕಾಳಿ', 'Mahankali Mahakali'],
+  ['ಕೇಂದ್ರ ಕಾ ರಾಜಾ', 'Kendra Ka Raja'],
+  ['ಗೌರಿ', 'Gouri Gauri'],
+  ['ಹಿಂದೂ', 'Hindu Hindoo'],
+  ['ಸಾಮ್ರಾಟ್', 'Samrat Samraat'],
+  ['ವಿಠಲ', 'Vithala Vithal Vitthal'],
+  ['ಬುದ್ಧಿವಿಧಾತ', 'Buddhividhata'],
+  ['ಭರಮೇಶ್ವರ', 'Bharameshwara'],
+  ['ಭಜಂತ್ರಿ', 'Bhajantri'],
+  ['ಕನ್ನಡಿಗರ', 'Kannadigara Kannadiga'],
+  ['ಹುಡ್ಕೋ', 'HUDCO Hudco'],
+  ['ಗೌರಿಸುತ', 'Gourisuta Gaurisuta'],
+  ['ವೀರ', 'Veera Vira'],
+  ['ಸಾವರ್ಕರ', 'Savarkar Savarkar'],
+  ['ಲಡ್ಡು', 'Laddu Ladoo'],
+  ['ಓಂಕಾರ', 'Omkara Omkar'],
+  ['ಕೇಸರಿ', 'Kesari Keshari'],
+  ['ನಂದನ', 'Nandana Nandan'],
+  ['ಕುವೆಂಪು', 'Kuvempu'],
+  ['ಕ್ಷೇಮಾಭಿವೃದ್ಧಿ', 'Kshemabhivriddhi'],
+  ['ಕಲಾ', 'Kala'],
+  ['ಸಾಂಸ್ಕೃತಿಕ', 'Samskritika Cultural'],
+  ['ಅನ್ನಪೂರ್ಣೇಶ್ವರಿ', 'Annapoorneshwari Annapurneshwari'],
+  ['ಶಾಸ್ತ್ರೀ', 'Shastri Sastri'],
+  ['ಕಬ್ಬೇರ', 'Kabbera Kabber'],
+  ['ಗ್ರಾಮೀಣಾಭಿವೃದ್ಧಿ', 'Graminabhivriddhi Gramina'],
+  ['ಬನಶಂಕರಿ', 'Banashankari Banashankari'],
+  ['ಚಿತ್ರಗಾರ', 'Chitragara Chitragar'],
+  ['ದೃಷ್ಟಿ', 'Drishti Dristhi'],
+  ['ದೇವಸ್ಥಾನ', 'Temple Devasthana'],
+  ['ಕಾಲೋನಿ', 'Colony'],
+  ['ಬಡಾವಣೆ', 'Layout Badavane'],
+  ['ಗುಡಿ', 'Gudi Temple'],
+  ['ರಸ್ತೆ', 'Road Road'],
+  ['ಓಣಿ', 'Oni Street'],
+  ['ಎದುರು', 'Opposite Eduru'],
+  ['ಹತ್ತಿರ', 'Near Hattira'],
+  ['ಕೊಪ್ಪಳ', 'Koppal Koppala'],
+  ['ಭಾಗ್ಯನಗರ', 'Bhagyanagara Bhagyanagar'],
+  ['ಸರ್ಕಾರ', 'Sarkar Sarkar'],
+  ['ಉತ್ಸವ', 'Utsava Utsav']
+];
+
+function getEnglishTransliteration(text: string): string {
+  let res = text;
+  for (const [kan, eng] of TRANSLITERATION_DICTIONARY) {
+    res = res.replaceAll(kan, eng + ' ');
+  }
+  return res.replace(/\s+/g, ' ').trim();
+}
+
 export async function searchExistingMandals(query: string) {
   const q = query.trim();
   if (!q || q.length < 1) {
@@ -17,19 +142,35 @@ export async function searchExistingMandals(query: string) {
 
   try {
     const supabase = await createClient();
+
+    // 1. Fetch active mandals from database
     const { data, error } = await supabase
       .from('mandals')
-      .select('id, name, name_en, area')
-      .or(`name.ilike.%${q}%,name_en.ilike.%${q}%,area.ilike.%${q}%`)
-      .eq('is_active', true)
-      .limit(8);
+      .select('id, name, area')
+      .eq('is_active', true);
 
-    if (error) {
+    if (error || !data) {
       console.error('Error searching mandals:', error);
       return { mandals: [] };
     }
 
-    return { mandals: data || [] };
+    // 2. Perform bi-lingual multi-token matching over name, english transliteration, and area
+    const queryTerms = q.toLowerCase().split(/\s+/).filter(Boolean);
+
+    const matched = data
+      .map((m) => ({
+        id: m.id,
+        name: m.name,
+        name_en: getEnglishTransliteration(m.name),
+        area: m.area || '',
+      }))
+      .filter((m) => {
+        const fullSearchableText = `${m.name} ${m.name_en} ${m.area}`.toLowerCase();
+        return queryTerms.every((term) => fullSearchableText.includes(term));
+      })
+      .slice(0, 8);
+
+    return { mandals: matched };
   } catch (err) {
     console.error('Search mandals exception:', err);
     return { mandals: [] };
