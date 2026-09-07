@@ -164,7 +164,8 @@ export default function MandalDetailPage() {
                 </tr>
               ) : (
                 reviews.map((review) => {
-                  const email = review.profiles?.email || 'Unknown';
+                  const rawEmail = review.reviewer_email || review.profiles?.email || 'Anonymous Evaluator';
+                  const email = rawEmail.includes('@') ? maskEmail(rawEmail) : rawEmail;
                   return (
                     <tr key={review.id} style={{ cursor: 'default' }}>
                       <td style={{ whiteSpace: 'nowrap', fontSize: '0.85rem' }}>
@@ -175,7 +176,7 @@ export default function MandalDetailPage() {
                         })}
                       </td>
                       <td style={{ fontSize: '0.85rem' }}>
-                        {maskEmail(email)}
+                        {email}
                       </td>
                       <td style={{ textAlign: 'center' }}>{review.idol_rating}</td>
                       <td style={{ textAlign: 'center' }}>{review.decoration_rating}</td>

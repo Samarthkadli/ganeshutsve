@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import StarRating from '@/components/StarRating';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { EVALUATION_QUESTIONS, APP_CONFIG } from '@/lib/config';
-import { submitReview } from '@/app/actions/reviews';
+import { submitReview, fetchExistingReviewByEmail } from '@/app/actions/reviews';
 import { searchExistingMandals } from '@/app/actions/mandals';
 import type { ReviewFormData } from '@/types/database';
 
@@ -20,10 +19,14 @@ interface MandalSuggestion {
 export default function HomeEvaluationPage() {
   const [mandalName, setMandalName] = useState('');
   const [area, setArea] = useState('');
+  const [reviewerEmail, setReviewerEmail] = useState('');
   const [selectedMandalId, setSelectedMandalId] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<MandalSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isExistingLoaded, setIsExistingLoaded] = useState(false);
+  const [isFetchingReview, setIsFetchingReview] = useState(false);
+  const [isNewReviewNotice, setIsNewReviewNotice] = useState(false);
 
   const [ratings, setRatings] = useState<Record<RatingKey, number>>({} as Record<RatingKey, number>);
   const [feedback, setFeedback] = useState('');
@@ -87,6 +90,72 @@ export default function HomeEvaluationPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Auto-fetch existing review when Mandal Name + Email are entered
+  const fetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (fetchTimeoutRef.current) {
+      clearTimeout(fetchTimeoutRef.current);
+    }
+
+    const trimmedEmail = reviewerEmail.trim();
+    const trimmedMandal = mandalName.trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail) || !trimmedMandal) {
+      setRatings({} as Record<RatingKey, number>);
+      setFeedback('');
+      setPhotoFile(null);
+      setPhotoPreview(null);
+      setIsExistingLoaded(false);
+      setIsNewReviewNotice(false);
+      return;
+    }
+
+    fetchTimeoutRef.current = setTimeout(async () => {
+      setIsFetchingReview(true);
+      try {
+        const result = await fetchExistingReviewByEmail(trimmedMandal, selectedMandalId || undefined, trimmedEmail);
+        if (result.review) {
+          const r = result.review;
+          setRatings({
+            idol_rating: r.idol_rating,
+            decoration_rating: r.decoration_rating,
+            lighting_rating: r.lighting_rating,
+            creativity_rating: r.creativity_rating,
+            cleanliness_rating: r.cleanliness_rating,
+            eco_friendly_rating: r.eco_friendly_rating,
+            cultural_rating: r.cultural_rating,
+            discipline_rating: r.discipline_rating,
+            facilities_rating: r.facilities_rating,
+            overall_rating: r.overall_rating,
+          });
+          setFeedback(r.feedback || '');
+          setPhotoPreview(r.photo_url || null);
+          setIsExistingLoaded(true);
+          setIsNewReviewNotice(false);
+        } else {
+          setRatings({} as Record<RatingKey, number>);
+          setFeedback('');
+          setPhotoFile(null);
+          setPhotoPreview(null);
+          setIsExistingLoaded(false);
+          setIsNewReviewNotice(true);
+        }
+      } catch (err) {
+        console.error('Fetch existing review error:', err);
+      } finally {
+        setIsFetchingReview(false);
+      }
+    }, 400);
+
+    return () => {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+    };
+  }, [mandalName, selectedMandalId, reviewerEmail]);
+
   const handleSelectSuggestion = (item: MandalSuggestion) => {
     setMandalName(item.name);
     setArea(item.area || '');
@@ -117,6 +186,13 @@ export default function HomeEvaluationPage() {
       newErrors.mandal_name = 'Please enter the Ganesh Mandal name.';
     }
 
+    const trimmedEmail = reviewerEmail.trim();
+    if (!trimmedEmail) {
+      newErrors.reviewer_email = 'ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter your email address.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      newErrors.reviewer_email = 'ಸಿಂಧುತ್ವ ಹೊಂದಿರುವ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter a valid email address.';
+    }
+
     for (const q of EVALUATION_QUESTIONS) {
       if (!ratings[q.id] || ratings[q.id] < 1 || ratings[q.id] > 10) {
         newErrors[q.id] = `Please rate ${q.label}`;
@@ -132,6 +208,9 @@ export default function HomeEvaluationPage() {
       if (!mandalName.trim()) {
         document.getElementById('mandal-name-input')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         document.getElementById('mandal-name-input')?.focus();
+      } else if (errors.reviewer_email || !reviewerEmail.trim()) {
+        document.getElementById('reviewer-email-input')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('reviewer-email-input')?.focus();
       } else {
         const firstErrorKey = EVALUATION_QUESTIONS.find((q) => !ratings[q.id])?.id;
         if (firstErrorKey) {
@@ -154,6 +233,7 @@ export default function HomeEvaluationPage() {
         mandal_name: mandalName.trim(),
         mandal_id: selectedMandalId || undefined,
         area: area.trim() || undefined,
+        reviewer_email: reviewerEmail.trim().toLowerCase(),
         idol_rating: ratings.idol_rating,
         decoration_rating: ratings.decoration_rating,
         lighting_rating: ratings.lighting_rating,
@@ -189,6 +269,7 @@ export default function HomeEvaluationPage() {
   const handleReset = () => {
     setMandalName('');
     setArea('');
+    setReviewerEmail('');
     setSelectedMandalId(null);
     setRatings({} as Record<RatingKey, number>);
     setFeedback('');
@@ -567,41 +648,90 @@ export default function HomeEvaluationPage() {
                   <p className="form-error mt-sm">{errors.mandal_name}</p>
                 )}
 
-                {/* Selected existing mandal indicator badge */}
-                {selectedMandalId && (
-                  <div
-                    style={{
-                      marginTop: '0.75rem',
-                      padding: '6px 12px',
-                      background: 'rgba(39, 174, 96, 0.1)',
-                      border: '1px solid rgba(39, 174, 96, 0.3)',
-                      borderRadius: 'var(--radius-sm)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      fontSize: '0.85rem',
-                      color: 'var(--color-success)',
-                    }}
+                {/* Reviewer Email Field (Required for 1 review per email rule) */}
+                <div style={{ marginTop: '1.25rem' }}>
+                  <label
+                    htmlFor="reviewer-email-input"
+                    className="eval-question-label"
+                    style={{ display: 'block', marginBottom: '2px', fontSize: '0.95rem' }}
                   >
-                    <span>✓ Linked to existing mandal in database</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedMandalId(null);
-                      }}
+                    ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸ / Your Email Address <span style={{ color: 'var(--color-error)' }}>*</span>
+                  </label>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '0.4rem' }}>
+                    Used to ensure 1 review per Mandal per email address <span style={{ color: 'var(--color-error)' }}>*</span>
+                  </div>
+                  <input
+                    type="email"
+                    id="reviewer-email-input"
+                    className="form-input"
+                    placeholder="e.g. reviewer@example.com"
+                    value={reviewerEmail}
+                    onChange={(e) => {
+                      setReviewerEmail(e.target.value);
+                      if (errors.reviewer_email) {
+                        setErrors((prev) => {
+                          const next = { ...prev };
+                          delete next.reviewer_email;
+                          return next;
+                        });
+                      }
+                    }}
+                    disabled={submitting}
+                    style={{
+                      fontSize: '1rem',
+                      borderColor: errors.reviewer_email ? 'var(--color-error)' : undefined,
+                    }}
+                    autoComplete="email"
+                  />
+                  {errors.reviewer_email && (
+                    <p className="form-error mt-sm">{errors.reviewer_email}</p>
+                  )}
+
+                  {isFetchingReview && (
+                    <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: 'var(--color-gold-light)' }}>
+                      🔍 Checking for your previous review...
+                    </div>
+                  )}
+
+                  {isExistingLoaded && (
+                    <div
                       style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--color-text-muted)',
-                        cursor: 'pointer',
-                        fontSize: '0.8rem',
-                        textDecoration: 'underline',
+                        marginTop: '0.75rem',
+                        padding: '10px 14px',
+                        background: 'rgba(229, 193, 88, 0.15)',
+                        border: '1px solid var(--color-border-strong)',
+                        borderRadius: 'var(--radius-md)',
+                        color: 'var(--color-gold-light)',
+                        fontSize: '0.85rem',
+                        lineHeight: 1.4,
                       }}
                     >
-                      Unlink
-                    </button>
-                  </div>
-                )}
+                      <div>✨ <strong>ನಿಮ್ಮ ಹಿಂದಿನ ಮೌಲ್ಯಮಾಪನ ಸಿಕ್ಕಿದೆ! / Previous evaluation loaded!</strong></div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>
+                        Your previous ratings have been pre-filled below. Submitting will update your scores.
+                      </div>
+                    </div>
+                  )}
+
+                  {isNewReviewNotice && !isExistingLoaded && !isFetchingReview && reviewerEmail && mandalName && (
+                    <div
+                      style={{
+                        marginTop: '0.75rem',
+                        padding: '8px 12px',
+                        background: 'rgba(39, 174, 96, 0.12)',
+                        border: '1px solid rgba(39, 174, 96, 0.3)',
+                        borderRadius: 'var(--radius-md)',
+                        color: 'var(--color-success)',
+                        fontSize: '0.85rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      ✨ <strong>ಹೊಸ ಮೌಲ್ಯಮಾಪನ / New Evaluation</strong> — You have not rated this Mandal yet. Please rate it below!
+                    </div>
+                  )}
+                </div>
 
                 {/* Optional Area */}
                 <div style={{ marginTop: '1rem' }}>

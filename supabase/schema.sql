@@ -63,6 +63,11 @@ CREATE POLICY "Public can insert mandals"
   ON public.mandals FOR INSERT
   WITH CHECK (true);
 
+CREATE POLICY "Public can update mandals"
+  ON public.mandals FOR UPDATE
+  USING (true)
+  WITH CHECK (true);
+
 -- Admins can do everything with mandals
 CREATE POLICY "Admins can manage mandals"
   ON public.mandals FOR ALL
@@ -103,14 +108,20 @@ CREATE TABLE IF NOT EXISTS public.reviews (
   overall_rating SMALLINT NOT NULL CHECK (overall_rating BETWEEN 1 AND 10),
   feedback TEXT CHECK (char_length(feedback) <= 500),
   photo_url TEXT,
+  reviewer_email TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 
--- Allow public to submit reviews
+-- Allow public to submit and update reviews
 CREATE POLICY "Public can insert review"
   ON public.reviews FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Public can update review"
+  ON public.reviews FOR UPDATE
+  USING (true)
   WITH CHECK (true);
 
 -- Allow public to view reviews
@@ -129,10 +140,31 @@ CREATE POLICY "Admins can view all reviews"
     )
   );
 
--- Indexes for performance
+-- 1. Add reviewer_email and updated_at columns
+ALTER TABLE public.reviews ADD COLUMN IF NOT EXISTS reviewer_email TEXT;
+ALTER TABLE public.reviews ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+-- 2. Clean up existing duplicate reviews for the same user & mandal (keeps the newest review)
+DELETE FROM public.reviews r1
+USING public.reviews r2
+WHERE r1.mandal_id = r2.mandal_id
+  AND r1.user_id = r2.user_id
+  AND (r1.created_at < r2.created_at OR (r1.created_at = r2.created_at AND r1.id < r2.id));
+
+-- 3. Clean up existing duplicate reviews for the same email & mandal
+DELETE FROM public.reviews r1
+USING public.reviews r2
+WHERE r1.mandal_id = r2.mandal_id
+  AND r1.reviewer_email IS NOT NULL AND r1.reviewer_email != ''
+  AND LOWER(r1.reviewer_email) = LOWER(r2.reviewer_email)
+  AND (r1.created_at < r2.created_at OR (r1.created_at = r2.created_at AND r1.id < r2.id));
+
+-- 4. Indexes for performance & unique constraints (1 review per email/user per mandal)
 CREATE INDEX IF NOT EXISTS idx_reviews_user_id ON public.reviews(user_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_mandal_id ON public.reviews(mandal_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_created_at ON public.reviews(created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_mandal_reviewer_email ON public.reviews(mandal_id, LOWER(reviewer_email)) WHERE reviewer_email IS NOT NULL AND reviewer_email != '';
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_mandal_user_id ON public.reviews(mandal_id, user_id) WHERE user_id IS NOT NULL;
 
 -- =====================================================
 -- 4. ADMIN VIEWS (10-Question Aggregation)

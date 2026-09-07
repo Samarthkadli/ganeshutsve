@@ -79,92 +79,142 @@ export async function getAllMandals() {
 
 export async function getMandalStats() {
   if (!isSupabaseConfigured()) {
-    const stats: MandalStats[] = SAMPLE_MANDALS_FALLBACK.map((m, idx) => ({
-      id: m.id,
-      name: m.name,
-      area: m.area,
-      is_active: m.is_active,
-      total_reviews: 15 - idx,
-      average_rating: +(9.4 - idx * 0.1).toFixed(2),
-      avg_idol: 9.6,
-      avg_decoration: 9.4,
-      avg_lighting: 9.2,
-      avg_creativity: 9.4,
-      avg_cleanliness: 9.0,
-      avg_eco_friendly: 8.8,
-      avg_cultural: 9.2,
-      avg_discipline: 9.1,
-      avg_facilities: 9.0,
-      avg_overall: 9.6,
-    }));
-    return { stats };
+    return { stats: [] };
   }
 
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  // 1. Try fetching from mandal_stats view first
+  const { data: viewData, error: viewError } = await supabase
     .from('mandal_stats')
     .select('*')
     .order('total_reviews', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching mandal stats:', error);
-    return { stats: [], error: 'Failed to load statistics.' };
+  if (!viewError && viewData && viewData.length > 0) {
+    return { stats: viewData };
   }
 
-  return { stats: data || [] };
+  // 2. Fallback: Query mandals and reviews directly to compute statistics
+  try {
+    const { data: mandals } = await supabase.from('mandals').select('*');
+    const { data: reviews } = await supabase.from('reviews').select('*');
+
+    if (!mandals) return { stats: [] };
+
+    const reviewsMap = new Map<string, Array<Record<string, unknown>>>();
+    (reviews || []).forEach((r) => {
+      const existing = reviewsMap.get(r.mandal_id) || [];
+      existing.push(r);
+      reviewsMap.set(r.mandal_id, existing);
+    });
+
+    const calculatedStats: MandalStats[] = mandals.map((m) => {
+      const mReviews = reviewsMap.get(m.id) || [];
+      const count = mReviews.length;
+
+      const calcAvg = (key: string) => {
+        if (count === 0) return 0;
+        const sum = mReviews.reduce((acc, curr) => acc + (Number(curr[key]) || 0), 0);
+        return +(sum / count).toFixed(2);
+      };
+
+      const avgIdol = calcAvg('idol_rating');
+      const avgDec = calcAvg('decoration_rating');
+      const avgLight = calcAvg('lighting_rating');
+      const avgCreat = calcAvg('creativity_rating');
+      const avgClean = calcAvg('cleanliness_rating');
+      const avgEco = calcAvg('eco_friendly_rating');
+      const avgCult = calcAvg('cultural_rating');
+      const avgDisc = calcAvg('discipline_rating');
+      const avgFac = calcAvg('facilities_rating');
+      const avgOver = calcAvg('overall_rating');
+
+      const overallAvg =
+        count === 0
+          ? 0
+          : +((avgIdol + avgDec + avgLight + avgCreat + avgClean + avgEco + avgCult + avgDisc + avgFac + avgOver) / 10).toFixed(2);
+
+      return {
+        id: m.id,
+        name: m.name,
+        area: m.area || '',
+        is_active: m.is_active,
+        total_reviews: count,
+        average_rating: overallAvg,
+        avg_idol: avgIdol,
+        avg_decoration: avgDec,
+        avg_lighting: avgLight,
+        avg_creativity: avgCreat,
+        avg_cleanliness: avgClean,
+        avg_eco_friendly: avgEco,
+        avg_cultural: avgCult,
+        avg_discipline: avgDisc,
+        avg_facilities: avgFac,
+        avg_overall: avgOver,
+      };
+    });
+
+    calculatedStats.sort((a, b) => b.total_reviews - a.total_reviews);
+    return { stats: calculatedStats };
+  } catch (fallbackErr) {
+    console.error('Direct stats calculation error:', fallbackErr);
+    return { stats: [] };
+  }
 }
 
 export async function getMandalDetail(mandalId: string) {
   if (!isSupabaseConfigured()) {
-    const mandal = SAMPLE_MANDALS_FALLBACK.find((m) => m.id === mandalId) || SAMPLE_MANDALS_FALLBACK[0];
-    const stats: MandalStats = {
-      id: mandal.id,
-      name: mandal.name,
-      area: mandal.area,
-      is_active: mandal.is_active,
-      total_reviews: 12,
-      average_rating: 9.4,
-      avg_idol: 9.6,
-      avg_decoration: 9.4,
-      avg_lighting: 9.2,
-      avg_creativity: 9.4,
-      avg_cleanliness: 9.0,
-      avg_eco_friendly: 8.8,
-      avg_cultural: 9.2,
-      avg_discipline: 9.1,
-      avg_facilities: 9.0,
-      avg_overall: 9.6,
-    };
-    return { stats, reviews: [] };
+    return { stats: null, reviews: [], error: 'Database not configured.' };
   }
 
   const supabase = await createClient();
 
-  // Get mandal info + stats
-  const { data: stats, error: statsError } = await supabase
-    .from('mandal_stats')
-    .select('*')
-    .eq('id', mandalId)
-    .single();
+  // 1. Get mandal statistics using getMandalStats
+  const { stats: allStats } = await getMandalStats();
+  let stats = allStats.find((s) => s.id === mandalId) || null;
 
-  if (statsError) {
+  if (!stats) {
+    const { data: mandal } = await supabase
+      .from('mandals')
+      .select('*')
+      .eq('id', mandalId)
+      .maybeSingle();
+
+    if (mandal) {
+      stats = {
+        id: mandal.id,
+        name: mandal.name,
+        area: mandal.area || '',
+        is_active: mandal.is_active,
+        total_reviews: 0,
+        average_rating: 0,
+        avg_idol: 0,
+        avg_decoration: 0,
+        avg_lighting: 0,
+        avg_creativity: 0,
+        avg_cleanliness: 0,
+        avg_eco_friendly: 0,
+        avg_cultural: 0,
+        avg_discipline: 0,
+        avg_facilities: 0,
+        avg_overall: 0,
+      };
+    }
+  }
+
+  if (!stats) {
     return { stats: null, reviews: [], error: 'Mandal not found.' };
   }
 
-  // Get individual reviews with user emails
+  // 2. Get individual reviews directly (without schema join errors)
   const { data: reviews, error: reviewsError } = await supabase
     .from('reviews')
-    .select(`
-      *,
-      profiles:user_id (email)
-    `)
+    .select('*')
     .eq('mandal_id', mandalId)
     .order('created_at', { ascending: false });
 
   if (reviewsError) {
-    console.error('Error fetching reviews:', reviewsError);
-    return { stats, reviews: [], error: 'Failed to load reviews.' };
+    console.error('Error fetching reviews for mandal:', reviewsError);
   }
 
   return { stats, reviews: reviews || [] };
@@ -284,12 +334,8 @@ export async function getDashboardStats() {
     .from('reviews')
     .select('*', { count: 'exact', head: true });
 
-  // Get stats for calculations
-  const { data: stats } = await supabase
-    .from('mandal_stats')
-    .select('*')
-    .order('total_reviews', { ascending: false });
-
+  // Get mandal statistics (using view or direct fallback)
+  const { stats } = await getMandalStats();
   const allStats = stats || [];
 
   // Overall average rating
@@ -306,7 +352,7 @@ export async function getDashboardStats() {
     totalMandals: totalMandals || 0,
     totalReviews: totalReviews || 0,
     overallAverage: Number(overallAverage.toFixed(2)),
-    mostReviewed: mostReviewed
+    mostReviewed: mostReviewed && mostReviewed.total_reviews > 0
       ? { name: mostReviewed.name, count: mostReviewed.total_reviews }
       : null,
   };

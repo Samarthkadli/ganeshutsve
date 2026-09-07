@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
 import type { ReviewFormData } from '@/types/database';
 
 export async function submitReview(data: ReviewFormData) {
@@ -88,7 +89,16 @@ export async function submitReview(data: ReviewFormData) {
       return { error: 'ಮಂಡಳಿ ID ಸಿಗಲಿಲ್ಲ / Could not resolve Mandal ID. Please try again.' };
     }
 
-    // 3. Insert review with 10 ratings
+    // Validate email format if provided
+    const reviewerEmail = (data.reviewer_email || user?.email || '').trim().toLowerCase();
+    if (reviewerEmail) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(reviewerEmail)) {
+        return { error: 'ದಯವಿಟ್ಟು ಸಿಂಧುತ್ವ ಹೊಂದಿರುವ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter a valid email address.' };
+      }
+    }
+
+    // 3. Insert or update review with 10 ratings
     const insertPayload: Record<string, unknown> = {
       mandal_id: mandalId,
       idol_rating: data.idol_rating,
@@ -103,15 +113,60 @@ export async function submitReview(data: ReviewFormData) {
       overall_rating: data.overall_rating,
       feedback: data.feedback?.trim() || null,
       photo_url: data.photo || null,
+      reviewer_email: reviewerEmail || null,
     };
 
     if (user?.id) {
       insertPayload.user_id = user.id;
     }
 
-    const { error: insertError } = await supabase
-      .from('reviews')
-      .insert(insertPayload);
+    // Check if review already exists for this email & mandal
+    let existingReviewId: string | null = null;
+
+    if (reviewerEmail) {
+      const { data: existing } = await supabase
+        .from('reviews')
+        .select('id')
+        .eq('mandal_id', mandalId)
+        .ilike('reviewer_email', reviewerEmail)
+        .maybeSingle();
+
+      if (existing?.id) {
+        existingReviewId = existing.id;
+      }
+    }
+
+    if (!existingReviewId && user?.id) {
+      const { data: existing } = await supabase
+        .from('reviews')
+        .select('id')
+        .eq('mandal_id', mandalId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (existing?.id) {
+        existingReviewId = existing.id;
+      }
+    }
+
+    let insertError = null;
+
+    if (existingReviewId) {
+      // Update existing review for this mandal & email
+      const { error: updateErr } = await supabase
+        .from('reviews')
+        .update(insertPayload)
+        .eq('id', existingReviewId);
+
+      insertError = updateErr;
+    } else {
+      // Insert new review
+      const { error: insErr } = await supabase
+        .from('reviews')
+        .insert(insertPayload);
+
+      insertError = insErr;
+    }
 
     if (!insertError && data.photo) {
       // Set mandal image_url if not set
@@ -123,16 +178,20 @@ export async function submitReview(data: ReviewFormData) {
     }
 
     if (insertError) {
-      console.error('Review insert error:', insertError);
-      if (insertError.code === '23505' || insertError.message?.includes('unique_user_review')) {
+      console.error('Review save error:', insertError);
+      if (insertError.code === '23505' || insertError.message?.includes('unique')) {
         return {
-          error: 'ನೀವು ಈಗಾಗಲೇ ಈ ಮಂಡಳಿಗೆ ಮೌಲ್ಯಮಾಪನ ಸಲ್ಲಿಕೆ ಮಾಡಿದ್ದೀರಿ / You have already submitted an evaluation for this Mandal. Thank you!',
+          error: 'ನೀವು ಈಗಾಗಲೇ ಈ ಮಂಡಳಿಗೆ ಮೌಲ್ಯಮಾಪನ ಸಲ್ಲಿಕೆ ಮಾಡಿದ್ದೀರಿ / You have already submitted an evaluation for this Mandal with this email.',
         };
       }
       return {
         error: `ಮೌಲ್ಯಮಾಪನ ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ / Review could not be saved: ${insertError.message}. Please run the SQL policy fix in Supabase.`,
       };
     }
+
+    revalidatePath('/admin/dashboard');
+    revalidatePath('/admin/mandals/manage');
+    revalidatePath('/');
 
     return { success: true, mandalName };
   } catch (err) {
@@ -155,4 +214,56 @@ export async function checkExistingReview() {
     .maybeSingle();
 
   return { hasReview: !!review };
+}
+
+export async function fetchExistingReviewByEmail(
+  mandalName: string,
+  mandalId?: string,
+  email?: string
+) {
+  if (!isSupabaseConfigured()) return { review: null };
+
+  const trimmedEmail = (email || '').trim().toLowerCase();
+  const trimmedMandalName = (mandalName || '').trim();
+
+  if (!trimmedEmail || (!mandalId && !trimmedMandalName)) {
+    return { review: null };
+  }
+
+  try {
+    const supabase = await createClient();
+
+    let targetMandalId = mandalId;
+
+    if (!targetMandalId && trimmedMandalName) {
+      const { data: existingMandal } = await supabase
+        .from('mandals')
+        .select('id')
+        .ilike('name', trimmedMandalName)
+        .limit(1)
+        .maybeSingle();
+
+      if (existingMandal?.id) {
+        targetMandalId = existingMandal.id;
+      }
+    }
+
+    if (!targetMandalId) return { review: null };
+
+    const { data: review } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('mandal_id', targetMandalId)
+      .ilike('reviewer_email', trimmedEmail)
+      .maybeSingle();
+
+    if (review) {
+      return { review };
+    }
+
+    return { review: null };
+  } catch (err) {
+    console.error('fetchExistingReviewByEmail error:', err);
+    return { review: null };
+  }
 }

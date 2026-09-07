@@ -37,6 +37,7 @@ export interface Review {
   overall_rating: number;
   feedback: string | null;
   photo_url?: string | null;
+  reviewer_email?: string | null;
   created_at: string;
 }
 
@@ -70,6 +71,7 @@ export interface ReviewFormData {
   mandal_name: string;
   mandal_id?: string;
   area?: string;
+  reviewer_email?: string;
   idol_rating: number;
   decoration_rating: number;
   lighting_rating: number;
