@@ -3,12 +3,22 @@
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import type { ReviewFormData } from '@/types/database';
+import { isValidEmailFormat } from '@/lib/email-validator';
 
 export async function submitReview(data: ReviewFormData) {
   // Validate mandal name
   const mandalName = data.mandal_name?.trim();
   if (!mandalName) {
     return { error: 'Please enter the Ganesh Mandal name.' };
+  }
+
+  // Validate reviewer email
+  const reviewerEmail = data.reviewer_email?.trim();
+  if (!reviewerEmail) {
+    return { error: 'ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter your email address.' };
+  }
+  if (!isValidEmailFormat(reviewerEmail)) {
+    return { error: 'ಸಿಂಧುತ್ವ ಹೊಂದಿರುವ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ (e.g. name@gmail.com) / Please enter a valid email address.' };
   }
 
   // Validate all 10 ratings are 1-10 points

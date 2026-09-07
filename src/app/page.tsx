@@ -7,6 +7,7 @@ import { EVALUATION_QUESTIONS, APP_CONFIG } from '@/lib/config';
 import { submitReview, fetchExistingReviewByEmail } from '@/app/actions/reviews';
 import { searchExistingMandals } from '@/app/actions/mandals';
 import type { ReviewFormData } from '@/types/database';
+import { isValidEmailFormat, getSuggestedEmail } from '@/lib/email-validator';
 
 type RatingKey = typeof EVALUATION_QUESTIONS[number]['id'];
 
@@ -27,6 +28,7 @@ export default function HomeEvaluationPage() {
   const [isExistingLoaded, setIsExistingLoaded] = useState(false);
   const [isFetchingReview, setIsFetchingReview] = useState(false);
   const [isNewReviewNotice, setIsNewReviewNotice] = useState(false);
+  const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
 
   const [ratings, setRatings] = useState<Record<RatingKey, number>>({} as Record<RatingKey, number>);
   const [feedback, setFeedback] = useState('');
@@ -189,8 +191,8 @@ export default function HomeEvaluationPage() {
     const trimmedEmail = reviewerEmail.trim();
     if (!trimmedEmail) {
       newErrors.reviewer_email = 'ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter your email address.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      newErrors.reviewer_email = 'ಸಿಂಧುತ್ವ ಹೊಂದಿರುವ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter a valid email address.';
+    } else if (!isValidEmailFormat(trimmedEmail)) {
+      newErrors.reviewer_email = 'ಸಿಂಧುತ್ವ ಹೊಂದಿರುವ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ (e.g. user@gmail.com) / Please enter a valid email address.';
     }
 
     for (const q of EVALUATION_QUESTIONS) {
@@ -664,10 +666,13 @@ export default function HomeEvaluationPage() {
                     type="email"
                     id="reviewer-email-input"
                     className="form-input"
-                    placeholder="e.g. reviewer@example.com"
+                    placeholder="e.g. reviewer@gmail.com"
                     value={reviewerEmail}
                     onChange={(e) => {
-                      setReviewerEmail(e.target.value);
+                      const val = e.target.value;
+                      setReviewerEmail(val);
+                      const suggestion = getSuggestedEmail(val);
+                      setEmailSuggestion(suggestion);
                       if (errors.reviewer_email) {
                         setErrors((prev) => {
                           const next = { ...prev };
@@ -679,10 +684,59 @@ export default function HomeEvaluationPage() {
                     disabled={submitting}
                     style={{
                       fontSize: '1rem',
-                      borderColor: errors.reviewer_email ? 'var(--color-error)' : undefined,
+                      borderColor: errors.reviewer_email ? 'var(--color-error)' : emailSuggestion ? '#f39c12' : undefined,
                     }}
                     autoComplete="email"
                   />
+
+                  {emailSuggestion && (
+                    <div
+                      style={{
+                        marginTop: '0.5rem',
+                        padding: '10px 14px',
+                        background: 'rgba(243, 156, 18, 0.15)',
+                        border: '1px solid rgba(243, 156, 18, 0.4)',
+                        borderRadius: 'var(--radius-md)',
+                        color: '#f39c12',
+                        fontSize: '0.88rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '8px',
+                      }}
+                    >
+                      <div>
+                        💡 <strong>ನೀವು ಇಮೇಲ್ ತಪ್ಪು ಬರೆದಿದ್ದೀರಾ? / Did you mean:</strong>{' '}
+                        <span style={{ textDecoration: 'underline', fontWeight: 700 }}>{emailSuggestion}</span>?
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setReviewerEmail(emailSuggestion);
+                          setEmailSuggestion(null);
+                          setErrors((prev) => {
+                            const next = { ...prev };
+                            delete next.reviewer_email;
+                            return next;
+                          });
+                        }}
+                        style={{
+                          padding: '4px 12px',
+                          background: 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: '6px',
+                          fontSize: '0.8rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        ⚡ Fix Email / ಸರಿಪಡಿಸಿ
+                      </button>
+                    </div>
+                  )}
+
                   {errors.reviewer_email && (
                     <p className="form-error mt-sm">{errors.reviewer_email}</p>
                   )}
