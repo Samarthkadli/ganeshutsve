@@ -786,22 +786,43 @@ export default function HomeEvaluationPage() {
                     {!isEmailVerified && (
                       <button
                         type="button"
-                        onClick={handleSendOtp}
-                        disabled={isSendingOtp || !reviewerEmail || resendCooldown > 0}
+                        onClick={() => {
+                          if (!reviewerEmail.trim()) {
+                            setOtpError('ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ಮೊದಲು ನಮೂದಿಸಿ / Please enter your email address first.');
+                            document.getElementById('reviewer-email-input')?.focus();
+                            return;
+                          }
+                          handleSendOtp();
+                        }}
+                        disabled={isSendingOtp || resendCooldown > 0}
                         style={{
-                          padding: '0 16px',
-                          background: resendCooldown > 0 ? 'rgba(255,255,255,0.1)' : 'var(--gradient-gold)',
-                          color: resendCooldown > 0 ? 'var(--color-text-muted)' : '#000',
-                          border: 'none',
+                          padding: '10px 20px',
+                          background: resendCooldown > 0
+                            ? 'rgba(255, 255, 255, 0.15)'
+                            : 'linear-gradient(135deg, #f59e0b 0%, #e5c158 50%, #d97706 100%)',
+                          color: resendCooldown > 0 ? '#94a3b8' : '#000000',
+                          border: resendCooldown > 0 ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid #f59e0b',
                           borderRadius: 'var(--radius-md)',
-                          fontWeight: 700,
-                          fontSize: '0.88rem',
+                          fontWeight: 800,
+                          fontSize: '0.92rem',
                           cursor: resendCooldown > 0 || isSendingOtp ? 'not-allowed' : 'pointer',
                           whiteSpace: 'nowrap',
+                          boxShadow: resendCooldown > 0 ? 'none' : '0 4px 14px rgba(245, 158, 11, 0.4)',
                           transition: 'all 200ms ease',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
                         }}
                       >
-                        {isSendingOtp ? 'Sending...' : resendCooldown > 0 ? `Resend (${resendCooldown}s)` : otpSent ? 'Resend OTP' : 'Send OTP / ಒಟಿಪಿ'}
+                        {isSendingOtp ? (
+                          '⏳ Sending...'
+                        ) : resendCooldown > 0 ? (
+                          `⏳ Resend (${resendCooldown}s)`
+                        ) : otpSent ? (
+                          '🔄 Resend OTP'
+                        ) : (
+                          '📩 Send OTP / ಒಟಿಪಿ'
+                        )}
                       </button>
                     )}
                   </div>
