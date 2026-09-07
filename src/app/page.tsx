@@ -6,6 +6,7 @@ import ConfirmDialog from '@/components/ConfirmDialog';
 import { EVALUATION_QUESTIONS, APP_CONFIG } from '@/lib/config';
 import { submitReview, fetchExistingReviewByEmail } from '@/app/actions/reviews';
 import { searchExistingMandals } from '@/app/actions/mandals';
+import { sendOtpToEmail, verifyOtpCode } from '@/app/actions/email-otp';
 import type { ReviewFormData } from '@/types/database';
 import { isValidEmailFormat, getSuggestedEmail } from '@/lib/email-validator';
 
@@ -29,6 +30,25 @@ export default function HomeEvaluationPage() {
   const [isFetchingReview, setIsFetchingReview] = useState(false);
   const [isNewReviewNotice, setIsNewReviewNotice] = useState(false);
   const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
+
+  // OTP Verification States
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [otpMessage, setOtpMessage] = useState('');
+  const [otpError, setOtpError] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  // Resend OTP countdown timer
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
 
   const [ratings, setRatings] = useState<Record<RatingKey, number>>({} as Record<RatingKey, number>);
   const [feedback, setFeedback] = useState('');
@@ -181,6 +201,61 @@ export default function HomeEvaluationPage() {
     });
   }, []);
 
+  const handleSendOtp = async () => {
+    const cleanEmail = reviewerEmail.trim();
+    if (!cleanEmail) {
+      setOtpError('ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter your email address.');
+      return;
+    }
+    if (!isValidEmailFormat(cleanEmail)) {
+      setOtpError('ಸಿಂಧುತ್ವ ಹೊಂದಿರುವ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter a valid email address.');
+      return;
+    }
+
+    setIsSendingOtp(true);
+    setOtpError('');
+    setOtpMessage('');
+
+    const res = await sendOtpToEmail(cleanEmail);
+    setIsSendingOtp(false);
+
+    if (res.success) {
+      setOtpSent(true);
+      setOtpMessage(res.message || 'OTP sent successfully!');
+      setResendCooldown(60);
+    } else {
+      setOtpError(res.error || 'Failed to send OTP.');
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otpCode.trim() || otpCode.trim().length !== 6) {
+      setOtpError('Please enter the 6-digit OTP code.');
+      return;
+    }
+
+    setIsVerifyingOtp(true);
+    setOtpError('');
+
+    const res = await verifyOtpCode(reviewerEmail, otpCode);
+    setIsVerifyingOtp(false);
+
+    if (res.success) {
+      setIsEmailVerified(true);
+      setOtpMessage('✅ Email successfully verified!');
+      setOtpError('');
+      if (errors.reviewer_email) {
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next.reviewer_email;
+          return next;
+        });
+      }
+    } else {
+      setOtpError(res.error || 'Invalid OTP code.');
+    }
+  };
+
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -193,6 +268,8 @@ export default function HomeEvaluationPage() {
       newErrors.reviewer_email = 'ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ / Please enter your email address.';
     } else if (!isValidEmailFormat(trimmedEmail)) {
       newErrors.reviewer_email = 'ಸಿಂಧುತ್ವ ಹೊಂದಿರುವ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ (e.g. user@gmail.com) / Please enter a valid email address.';
+    } else if (!isEmailVerified) {
+      newErrors.reviewer_email = 'ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಮೇಲ್ OTP ಪರಿಶೀಲಿಸಿ / Please verify your email with OTP before submitting.';
     }
 
     for (const q of EVALUATION_QUESTIONS) {
@@ -662,34 +739,88 @@ export default function HomeEvaluationPage() {
                   <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: '0.4rem' }}>
                     Used to ensure 1 review per Mandal per email address <span style={{ color: 'var(--color-error)' }}>*</span>
                   </div>
-                  <input
-                    type="email"
-                    id="reviewer-email-input"
-                    className="form-input"
-                    placeholder="e.g. reviewer@gmail.com"
-                    value={reviewerEmail}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setReviewerEmail(val);
-                      const suggestion = getSuggestedEmail(val);
-                      setEmailSuggestion(suggestion);
-                      if (errors.reviewer_email) {
-                        setErrors((prev) => {
-                          const next = { ...prev };
-                          delete next.reviewer_email;
-                          return next;
-                        });
-                      }
-                    }}
-                    disabled={submitting}
-                    style={{
-                      fontSize: '1rem',
-                      borderColor: errors.reviewer_email ? 'var(--color-error)' : emailSuggestion ? '#f39c12' : undefined,
-                    }}
-                    autoComplete="email"
-                  />
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
+                    <input
+                      type="email"
+                      id="reviewer-email-input"
+                      className="form-input"
+                      placeholder="e.g. reviewer@gmail.com"
+                      value={reviewerEmail}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setReviewerEmail(val);
+                        setIsEmailVerified(false);
+                        setOtpSent(false);
+                        const suggestion = getSuggestedEmail(val);
+                        setEmailSuggestion(suggestion);
+                        if (errors.reviewer_email) {
+                          setErrors((prev) => {
+                            const next = { ...prev };
+                            delete next.reviewer_email;
+                            return next;
+                          });
+                        }
+                      }}
+                      disabled={submitting || isEmailVerified}
+                      style={{
+                        flex: 1,
+                        fontSize: '1rem',
+                        borderColor: isEmailVerified
+                          ? 'var(--color-success)'
+                          : errors.reviewer_email
+                          ? 'var(--color-error)'
+                          : emailSuggestion
+                          ? '#f39c12'
+                          : undefined,
+                        background: isEmailVerified ? 'rgba(46, 204, 113, 0.08)' : undefined,
+                      }}
+                      autoComplete="email"
+                    />
 
-                  {emailSuggestion && (
+                    {!isEmailVerified && (
+                      <button
+                        type="button"
+                        onClick={handleSendOtp}
+                        disabled={isSendingOtp || !reviewerEmail || resendCooldown > 0}
+                        style={{
+                          padding: '0 16px',
+                          background: resendCooldown > 0 ? 'rgba(255,255,255,0.1)' : 'var(--gradient-gold)',
+                          color: resendCooldown > 0 ? 'var(--color-text-muted)' : '#000',
+                          border: 'none',
+                          borderRadius: 'var(--radius-md)',
+                          fontWeight: 700,
+                          fontSize: '0.88rem',
+                          cursor: resendCooldown > 0 || isSendingOtp ? 'not-allowed' : 'pointer',
+                          whiteSpace: 'nowrap',
+                          transition: 'all 200ms ease',
+                        }}
+                      >
+                        {isSendingOtp ? 'Sending...' : resendCooldown > 0 ? `Resend (${resendCooldown}s)` : otpSent ? 'Resend OTP' : 'Send OTP / ಒಟಿಪಿ'}
+                      </button>
+                    )}
+                  </div>
+
+                  {isEmailVerified && (
+                    <div
+                      style={{
+                        marginTop: '0.5rem',
+                        padding: '6px 12px',
+                        background: 'rgba(46, 204, 113, 0.15)',
+                        border: '1px solid rgba(46, 204, 113, 0.4)',
+                        borderRadius: 'var(--radius-md)',
+                        color: 'var(--color-success)',
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      ✅ ಇಮೇಲ್ ಯಶಸ್ವಿಯಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ! / Email Verified!
+                    </div>
+                  )}
+
+                  {emailSuggestion && !isEmailVerified && (
                     <div
                       style={{
                         marginTop: '0.5rem',
@@ -734,6 +865,73 @@ export default function HomeEvaluationPage() {
                       >
                         ⚡ Fix Email / ಸರಿಪಡಿಸಿ
                       </button>
+                    </div>
+                  )}
+
+                  {/* OTP Code Entry Section */}
+                  {otpSent && !isEmailVerified && (
+                    <div
+                      style={{
+                        marginTop: '0.85rem',
+                        padding: '14px',
+                        background: 'rgba(229, 193, 88, 0.08)',
+                        border: '1px solid var(--color-border-strong)',
+                        borderRadius: 'var(--radius-md)',
+                      }}
+                    >
+                      <label
+                        htmlFor="otp-code-input"
+                        style={{ display: 'block', fontSize: '0.88rem', fontWeight: 600, color: 'var(--color-gold-light)', marginBottom: '4px' }}
+                      >
+                        📩 6-ಅಂಕಿಯ OTP ಕೋಡ್ ನಮೂದಿಸಿ / Enter 6-digit OTP Code
+                      </label>
+
+                      {otpMessage && (
+                        <div style={{ fontSize: '0.82rem', color: 'var(--color-gold-light)', marginBottom: '8px', wordBreak: 'break-word' }}>
+                          {otpMessage}
+                        </div>
+                      )}
+
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
+                        <input
+                          type="text"
+                          id="otp-code-input"
+                          className="form-input"
+                          placeholder="e.g. 123456"
+                          maxLength={6}
+                          value={otpCode}
+                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                          style={{
+                            flex: 1,
+                            fontSize: '1.1rem',
+                            letterSpacing: '0.25em',
+                            textAlign: 'center',
+                            fontWeight: 700,
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleVerifyOtp}
+                          disabled={isVerifyingOtp || otpCode.length !== 6}
+                          style={{
+                            padding: '0 20px',
+                            background: 'var(--gradient-gold)',
+                            color: '#000',
+                            border: 'none',
+                            borderRadius: 'var(--radius-md)',
+                            fontWeight: 800,
+                            fontSize: '0.9rem',
+                            cursor: otpCode.length === 6 ? 'pointer' : 'not-allowed',
+                            opacity: otpCode.length === 6 ? 1 : 0.6,
+                          }}
+                        >
+                          {isVerifyingOtp ? 'Verifying...' : 'Verify OTP / ಪರಿಶೀಲಿಸಿ'}
+                        </button>
+                      </div>
+
+                      {otpError && (
+                        <p className="form-error mt-xs" style={{ color: 'var(--color-error)' }}>{otpError}</p>
+                      )}
                     </div>
                   )}
 
