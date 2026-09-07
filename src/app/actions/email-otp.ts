@@ -43,14 +43,14 @@ export async function sendOtpToEmail(email: string) {
       });
 
       await transporter.sendMail({
-        from: `"Koppal Ganesh Utsava" <${gmailUser}>`,
+        from: `"Koppal City Ganeshotsav" <${gmailUser}>`,
         to: cleanEmail,
-        subject: `🙏 ${code} — ನಿಮ್ಮ ಕೊಪ್ಪಳ ಗಣೇಶೋತ್ಸವ ಪರಿಶೀಲನಾ OTP / Your Verification Code`,
+        subject: `🙏 ${code} — ಕೊಪ್ಪಳ ನಗರ ಗಣೇಶೋತ್ಸವ ಮಂಡಳಿ ಮೌಲ್ಯಮಾಪನ ಕೋಡ್ / Koppal City Ganeshotsav Mandal Evaluation Code`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; background: #0f172a; border-radius: 12px; color: #ffffff; border: 1px solid #e5c158;">
             <div style="text-align: center; margin-bottom: 20px;">
-              <h2 style="color: #e5c158; margin: 0;">🙏 ಕೊಪ್ಪಳ ನಗರ ಪೊಲೀಸ್ ಠಾಣೆ - 2026 🙏</h2>
-              <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Koppal City Ganesh Utsava Mandal Evaluation</p>
+              <h2 style="color: #e5c158; margin: 0;">🙏 ಕೊಪ್ಪಳ ನಗರ ಗಣೇಶೋತ್ಸವ - 2026 🙏</h2>
+              <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Koppal City Ganeshotsav Mandal Evaluation Code</p>
             </div>
             
             <div style="background: rgba(229, 193, 88, 0.1); padding: 20px; border-radius: 8px; text-align: center; border: 1px dashed #e5c158;">

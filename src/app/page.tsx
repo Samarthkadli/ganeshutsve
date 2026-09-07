@@ -905,86 +905,101 @@ export default function HomeEvaluationPage() {
                   {otpSent && !isEmailVerified && (
                     <div
                       style={{
-                        marginTop: '0.85rem',
-                        padding: '14px',
-                        background: 'rgba(229, 193, 88, 0.08)',
-                        border: '1px solid var(--color-border-strong)',
-                        borderRadius: 'var(--radius-md)',
+                        marginTop: '1rem',
+                        padding: '16px 18px',
+                        background: 'rgba(245, 158, 11, 0.12)',
+                        border: '2px solid #f59e0b',
+                        borderRadius: 'var(--radius-lg)',
+                        boxShadow: '0 6px 20px rgba(245, 158, 11, 0.25)',
                       }}
                     >
                       <label
                         htmlFor="otp-code-input"
-                        style={{ display: 'block', fontSize: '0.88rem', fontWeight: 600, color: 'var(--color-gold-light)', marginBottom: '4px' }}
+                        style={{
+                          display: 'block',
+                          fontSize: '0.95rem',
+                          fontWeight: 700,
+                          color: '#f59e0b',
+                          marginBottom: '6px',
+                        }}
                       >
-                        📩 6-ಅಂಕಿಯ OTP ಕೋಡ್ ನಮೂದಿಸಿ / Enter 6-digit OTP Code
+                        📩 6-ಅಂಕಿಯ OTP ಕೋಡ್ ನಮೂದಿಸಿ / Enter 6-digit Verification OTP
                       </label>
 
                       {demoOtpCode ? (
                         <div
                           style={{
                             marginTop: '0.4rem',
-                            marginBottom: '0.8rem',
-                            padding: '10px 14px',
-                            background: 'rgba(229, 193, 88, 0.2)',
-                            border: '1px solid var(--color-border-strong)',
+                            marginBottom: '0.9rem',
+                            padding: '12px 16px',
+                            background: 'rgba(0, 0, 0, 0.4)',
+                            border: '1px solid #f59e0b',
                             borderRadius: '8px',
-                            color: 'var(--color-gold-light)',
-                            fontSize: '0.9rem',
+                            color: '#ffffff',
+                            fontSize: '0.95rem',
                           }}
                         >
                           🔑 <strong>ನಿಮ್ಮ OTP ಕೋಡ್ / Your Verification Code:</strong>{' '}
-                          <span style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '0.2em', color: '#fff', background: 'rgba(0,0,0,0.4)', padding: '2px 8px', borderRadius: '4px' }}>
+                          <span style={{ fontSize: '1.35rem', fontWeight: 900, letterSpacing: '0.2em', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.2)', padding: '3px 10px', borderRadius: '6px', border: '1px solid #f59e0b' }}>
                             {demoOtpCode}
                           </span>
-                          <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', marginTop: '4px' }}>
-                            (Copy/enter this code below to verify your email)
+                          <div style={{ fontSize: '0.8rem', color: '#cbd5e1', marginTop: '6px' }}>
+                            (Copy/enter this 6-digit code below to complete verification)
                           </div>
                         </div>
                       ) : otpMessage ? (
-                        <div style={{ fontSize: '0.82rem', color: 'var(--color-gold-light)', marginBottom: '8px', wordBreak: 'break-word' }}>
+                        <div style={{ fontSize: '0.88rem', color: '#f59e0b', fontWeight: 600, marginBottom: '10px', wordBreak: 'break-word' }}>
                           {otpMessage}
                         </div>
                       ) : null}
 
-                      <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
                         <input
                           type="text"
                           id="otp-code-input"
                           className="form-input"
-                          placeholder="e.g. 123456"
+                          placeholder="123456"
                           maxLength={6}
                           value={otpCode}
                           onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                           style={{
                             flex: 1,
-                            fontSize: '1.1rem',
-                            letterSpacing: '0.25em',
+                            fontSize: '1.25rem',
+                            letterSpacing: '0.3em',
                             textAlign: 'center',
-                            fontWeight: 700,
+                            fontWeight: 800,
+                            borderColor: '#f59e0b',
+                            background: 'rgba(15, 23, 42, 0.8)',
+                            color: '#ffffff',
                           }}
+                          autoFocus
                         />
                         <button
                           type="button"
                           onClick={handleVerifyOtp}
                           disabled={isVerifyingOtp || otpCode.length !== 6}
                           style={{
-                            padding: '0 20px',
-                            background: 'var(--gradient-gold)',
-                            color: '#000',
-                            border: 'none',
+                            padding: '0 24px',
+                            background: otpCode.length === 6
+                              ? 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)'
+                              : 'rgba(255, 255, 255, 0.15)',
+                            color: otpCode.length === 6 ? '#ffffff' : '#94a3b8',
+                            border: otpCode.length === 6 ? '1px solid #2ecc71' : '1px solid rgba(255, 255, 255, 0.2)',
                             borderRadius: 'var(--radius-md)',
                             fontWeight: 800,
-                            fontSize: '0.9rem',
+                            fontSize: '0.95rem',
                             cursor: otpCode.length === 6 ? 'pointer' : 'not-allowed',
-                            opacity: otpCode.length === 6 ? 1 : 0.6,
+                            boxShadow: otpCode.length === 6 ? '0 4px 14px rgba(46, 204, 113, 0.4)' : 'none',
+                            transition: 'all 200ms ease',
+                            whiteSpace: 'nowrap',
                           }}
                         >
-                          {isVerifyingOtp ? 'Verifying...' : 'Verify OTP / ಪರಿಶೀಲಿಸಿ'}
+                          {isVerifyingOtp ? '⏳ Verifying...' : '✅ Verify OTP / ಪರಿಶೀಲಿಸಿ'}
                         </button>
                       </div>
 
                       {otpError && (
-                        <p className="form-error mt-xs" style={{ color: 'var(--color-error)' }}>{otpError}</p>
+                        <p className="form-error mt-xs" style={{ color: 'var(--color-error)', fontWeight: 600, fontSize: '0.85rem' }}>{otpError}</p>
                       )}
                     </div>
                   )}
