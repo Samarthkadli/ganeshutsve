@@ -13,6 +13,7 @@ export interface Profile {
 export interface Mandal {
   id: string;
   name: string;
+  name_en?: string;
   area: string;
   description: string;
   image_url: string;

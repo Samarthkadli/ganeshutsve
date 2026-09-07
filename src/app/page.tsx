@@ -15,6 +15,7 @@ type RatingKey = typeof EVALUATION_QUESTIONS[number]['id'];
 interface MandalSuggestion {
   id: string;
   name: string;
+  name_en?: string;
   area: string;
 }
 
@@ -704,6 +705,11 @@ export default function HomeEvaluationPage() {
                             <div style={{ fontWeight: 600, color: 'var(--color-text-primary)', fontSize: '0.95rem' }}>
                               🏛️ {item.name}
                             </div>
+                            {item.name_en && (
+                              <div style={{ fontSize: '0.82rem', color: 'var(--color-gold-light)', fontStyle: 'italic', marginTop: '1px' }}>
+                                🔤 {item.name_en}
+                              </div>
+                            )}
                             {item.area && (
                               <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginTop: '2px' }}>
                                 📍 {item.area}

@@ -19,10 +19,10 @@ export async function searchExistingMandals(query: string) {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('mandals')
-      .select('id, name, area')
-      .ilike('name', `%${q}%`)
+      .select('id, name, name_en, area')
+      .or(`name.ilike.%${q}%,name_en.ilike.%${q}%,area.ilike.%${q}%`)
       .eq('is_active', true)
-      .limit(6);
+      .limit(8);
 
     if (error) {
       console.error('Error searching mandals:', error);
