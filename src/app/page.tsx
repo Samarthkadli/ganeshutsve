@@ -776,7 +776,8 @@ export default function HomeEvaluationPage() {
                       disabled={submitting || isEmailVerified}
                       style={{
                         flex: 1,
-                        fontSize: '1rem',
+                        minWidth: 0,
+                        fontSize: '0.95rem',
                         borderColor: isEmailVerified
                           ? 'var(--color-success)'
                           : errors.reviewer_email
@@ -801,33 +802,25 @@ export default function HomeEvaluationPage() {
                           handleSendOtp();
                         }}
                         disabled={isSendingOtp || resendCooldown > 0}
+                        className="btn-otp"
                         style={{
-                          padding: '10px 20px',
                           background: resendCooldown > 0
                             ? 'rgba(255, 255, 255, 0.15)'
                             : 'linear-gradient(135deg, #f59e0b 0%, #e5c158 50%, #d97706 100%)',
                           color: resendCooldown > 0 ? '#94a3b8' : '#000000',
                           border: resendCooldown > 0 ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid #f59e0b',
-                          borderRadius: 'var(--radius-md)',
-                          fontWeight: 800,
-                          fontSize: '0.92rem',
+                          boxShadow: resendCooldown > 0 ? 'none' : '0 4px 12px rgba(245, 158, 11, 0.35)',
                           cursor: resendCooldown > 0 || isSendingOtp ? 'not-allowed' : 'pointer',
-                          whiteSpace: 'nowrap',
-                          boxShadow: resendCooldown > 0 ? 'none' : '0 4px 14px rgba(245, 158, 11, 0.4)',
-                          transition: 'all 200ms ease',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px',
                         }}
                       >
                         {isSendingOtp ? (
                           '⏳ Sending...'
                         ) : resendCooldown > 0 ? (
-                          `⏳ Resend (${resendCooldown}s)`
+                          `⏳ (${resendCooldown}s)`
                         ) : otpSent ? (
-                          '🔄 Resend OTP'
+                          '🔄 Resend'
                         ) : (
-                          '📩 Send OTP / ಒಟಿಪಿ'
+                          '📩 Send OTP'
                         )}
                       </button>
                     )}
@@ -953,7 +946,7 @@ export default function HomeEvaluationPage() {
                         </div>
                       ) : null}
 
-                      <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
                         <input
                           type="text"
                           id="otp-code-input"
@@ -964,8 +957,9 @@ export default function HomeEvaluationPage() {
                           onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                           style={{
                             flex: 1,
-                            fontSize: '1.25rem',
-                            letterSpacing: '0.3em',
+                            minWidth: 0,
+                            fontSize: '1.2rem',
+                            letterSpacing: '0.25em',
                             textAlign: 'center',
                             fontWeight: 800,
                             borderColor: '#f59e0b',
@@ -978,23 +972,18 @@ export default function HomeEvaluationPage() {
                           type="button"
                           onClick={handleVerifyOtp}
                           disabled={isVerifyingOtp || otpCode.length !== 6}
+                          className="btn-otp"
                           style={{
-                            padding: '0 24px',
                             background: otpCode.length === 6
                               ? 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)'
                               : 'rgba(255, 255, 255, 0.15)',
                             color: otpCode.length === 6 ? '#ffffff' : '#94a3b8',
                             border: otpCode.length === 6 ? '1px solid #2ecc71' : '1px solid rgba(255, 255, 255, 0.2)',
-                            borderRadius: 'var(--radius-md)',
-                            fontWeight: 800,
-                            fontSize: '0.95rem',
                             cursor: otpCode.length === 6 ? 'pointer' : 'not-allowed',
                             boxShadow: otpCode.length === 6 ? '0 4px 14px rgba(46, 204, 113, 0.4)' : 'none',
-                            transition: 'all 200ms ease',
-                            whiteSpace: 'nowrap',
                           }}
                         >
-                          {isVerifyingOtp ? '⏳ Verifying...' : '✅ Verify OTP / ಪರಿಶೀಲಿಸಿ'}
+                          {isVerifyingOtp ? '⏳ Verifying...' : '✅ Verify'}
                         </button>
                       </div>
 
